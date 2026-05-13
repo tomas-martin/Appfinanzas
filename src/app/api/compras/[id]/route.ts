@@ -17,7 +17,7 @@ export async function PUT(
   const body = await request.json();
 
   const compra = await Compra.findOneAndUpdate(
-    { _id: id, userId: session.user.id },
+    { _id: id, userEmail: session.user.email },
     body,
     { new: true }
   );
@@ -43,7 +43,7 @@ export async function DELETE(
 
   const compra = await Compra.findOneAndDelete({
     _id: id,
-    userId: session.user.id,
+    userEmail: session.user.email,
   });
 
   if (!compra) {

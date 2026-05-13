@@ -17,7 +17,7 @@ export async function PUT(
   const body = await request.json();
 
   const movimiento = await Movimiento.findOneAndUpdate(
-    { _id: id, userId: session.user.id },
+    { _id: id, userEmail: session.user.email },
     body,
     { new: true }
   );
@@ -43,7 +43,7 @@ export async function DELETE(
 
   const movimiento = await Movimiento.findOneAndDelete({
     _id: id,
-    userId: session.user.id,
+    userEmail: session.user.email,
   });
 
   if (!movimiento) {

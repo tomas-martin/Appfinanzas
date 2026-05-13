@@ -17,7 +17,7 @@ export default function NuevoPage() {
   const [moneda, setMoneda] = useState<Moneda>("ARS");
   const [categoria, setCategoria] = useState("");
   const [fecha, setFecha] = useState(new Date().toISOString().split("T")[0]);
-  const [diaVencimiento, setDiaVencimiento] = useState("10"); // Default día 10
+  const [diaVencimiento, setDiaVencimiento] = useState("10");
   const [cantidadCuotas, setCantidadCuotas] = useState("1");
   const [tasaInteres, setTasaInteres] = useState("0");
   const [tarjeta, setTarjeta] = useState("");
@@ -115,11 +115,12 @@ export default function NuevoPage() {
         <h1 className="text-3xl font-extrabold tracking-tighter">Registrar</h1>
       </div>
 
-      <div className="flex gap-2 bg-[#0A0A0A] rounded-[2rem] p-1.5 mb-12 border border-white/5">
+      <div className="flex gap-2 bg-[#0A0A0A] rounded-[2rem] p-1.5 mb-12 border border-white/5 overflow-x-auto no-scrollbar">
         {tabs.map((t) => (
           <button key={t.id} onClick={() => { setTab(t.id); setCategoria(""); }}
-            className={`flex-1 flex flex-col items-center justify-center gap-1.5 py-4 rounded-[1.5rem] text-[8px] font-bold transition-all uppercase tracking-widest ${tab === t.id ? "bg-white text-black shadow-xl" : "text-muted/30"}`}>
-            <t.icon className="w-4 h-4" />
+            className={`flex-1 flex items-center justify-center gap-2 py-4 px-4 rounded-[1.5rem] text-[9px] font-bold transition-all uppercase tracking-widest whitespace-nowrap ${tab === t.id ? "bg-white text-black shadow-xl" : "text-muted/30"}`}>
+            <t.icon className="w-4 h-4 shrink-0" />
+            <span>{t.label}</span>
           </button>
         ))}
       </div>

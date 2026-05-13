@@ -9,7 +9,8 @@ import {
   CalendarClock,
   X,
   Trash2,
-  Plus
+  Plus,
+  LogOut
 } from "lucide-react";
 import { formatMoney, getCategoryIcon } from "@/lib/utils";
 import Link from "next/link";
@@ -70,11 +71,21 @@ export default function Dashboard() {
 
   return (
     <div className="container-mobile fade-up">
-      <div className="flex flex-col items-center text-center mt-8 mb-12">
-        {session?.user?.image && (
-          <img src={session.user.image} alt={firstName} className="w-14 h-14 rounded-full mb-4 border border-white/10" />
-        )}
-        <h1 className="text-[10px] font-bold text-muted uppercase tracking-[0.3em]">Capital Total</h1>
+      {/* Header with Logout */}
+      <div className="flex items-center justify-between mt-6 mb-10 px-1">
+        <div className="w-10" />
+        <div className="flex flex-col items-center text-center">
+          {session?.user?.image && (
+            <img src={session.user.image} alt={firstName} className="w-12 h-12 rounded-full mb-3 border border-white/10" />
+          )}
+          <h1 className="text-[9px] font-bold text-muted uppercase tracking-[0.3em]">Hola, {firstName}</h1>
+        </div>
+        <button 
+          onClick={() => signOut({ callbackUrl: "/login" })}
+          className="w-10 h-10 rounded-full bg-white/5 border border-white/5 flex items-center justify-center text-muted hover:text-white active:scale-90 transition-all"
+        >
+          <LogOut className="w-4 h-4" />
+        </button>
       </div>
 
       <div className="flex flex-col items-center text-center mb-12">
@@ -149,7 +160,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <button onClick={() => signOut({ callbackUrl: "/login" })} className="w-full text-[8px] font-bold uppercase tracking-[0.6em] text-muted/20 py-8">Desconectar</button>
     </div>
   );
 }
