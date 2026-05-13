@@ -15,7 +15,8 @@ const GastoFijoSchema = new Schema(
     pagos: [{
       mes: { type: Number, required: true },
       anio: { type: Number, required: true },
-      fechaPago: { type: Date, default: Date.now }
+      fechaPago: { type: Date, default: Date.now },
+      movimientoId: { type: Schema.Types.ObjectId }
     }]
   },
   { timestamps: true }

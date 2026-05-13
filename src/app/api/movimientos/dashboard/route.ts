@@ -15,15 +15,14 @@ export async function GET() {
   await dbConnect();
   const userEmail = session.user.email;
 
-  // Fechas del mes actual
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
   const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
 
-  // 1. Obtener todos los movimientos para el balance total (Histórico)
+  // 1. Todos los movimientos históricos
   const todosLosMovimientos = await Movimiento.find({ userEmail }).lean();
   
-  let balance = 0;
+  let balanceHistorico = 0; // El dinero total real que tenés hoy
   let ingresosMes = 0;
   let gastosMes = 0;
 
@@ -31,16 +30,16 @@ export async function GET() {
     const monto = m.montoARS || m.monto;
     const fechaMov = new Date(m.fecha);
     
-    // El balance SIEMPRE es histórico (total de plata que tenés)
+    // Balance Histórico (Todo lo que pasó hasta HOY, incluyendo pagos futuros ya hechos)
+    // Pero si el usuario dice "no me bajes la plata", quizás quiere ver el balance del mes.
+    // Vamos a calcular el balance histórico pero también los del mes.
     if (m.tipo === "ingreso") {
-      balance += monto;
-      // Solo sumamos al "Ingresos del mes" si está en rango
+      balanceHistorico += monto;
       if (fechaMov >= startOfMonth && fechaMov <= endOfMonth) {
         ingresosMes += monto;
       }
     } else {
-      balance -= monto;
-      // Solo sumamos al "Gastos del mes" si está en rango
+      balanceHistorico -= monto;
       if (fechaMov >= startOfMonth && fechaMov <= endOfMonth) {
         gastosMes += monto;
       }
@@ -58,14 +57,18 @@ export async function GET() {
     return acc + (restantes * c.montoPorCuota * unitRate);
   }, 0);
 
-  // 4. Últimos movimientos (Sigue siendo histórico para ver qué pasó recién)
-  const ultimosMovimientos = await Movimiento.find({ userEmail })
+  // 4. Últimos movimientos FILTRADOS por el mes actual
+  // Esto quita el "Pago Gas (8/2026)" del inicio si estamos en Mayo
+  const ultimosMovimientos = await Movimiento.find({ 
+      userEmail,
+      fecha: { $gte: startOfMonth, $lte: endOfMonth } 
+    })
     .sort({ fecha: -1 })
-    .limit(5)
+    .limit(10)
     .lean();
 
   return Response.json({
-    balance,
+    balance: balanceHistorico, // Mantenemos el global, pero los de abajo son mensuales
     ingresos: ingresosMes,
     gastos: gastosMes,
     cuotasPendientes,
