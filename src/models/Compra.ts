@@ -6,6 +6,8 @@ const CompraSchema = new Schema(
     descripcion: { type: String, required: true },
     montoTotal: { type: Number, required: true },
     moneda: { type: String, enum: ["ARS", "USD"], default: "ARS" },
+    tipoCambio: { type: Number, default: 1 },
+    montoARS: { type: Number },
     cantidadCuotas: { type: Number, required: true, min: 1 },
     cuotasPagadas: { type: Number, default: 0 },
     montoPorCuota: { type: Number, required: true },
