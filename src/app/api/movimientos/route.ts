@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+export const dynamic = "force-dynamic";
 import { auth } from "@/lib/auth";
 import dbConnect from "@/lib/mongodb";
 import Movimiento from "@/models/Movimiento";

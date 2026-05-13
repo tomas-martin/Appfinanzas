@@ -5,37 +5,41 @@ import { Wallet } from "lucide-react";
 
 export default function LoginPage() {
   return (
-    <div className="gradient-bg min-h-dvh flex flex-col items-center justify-center px-6">
-      {/* Decorative circles */}
-      <div className="absolute top-[-80px] left-[-80px] w-64 h-64 rounded-full bg-primary/10 blur-3xl" />
-      <div className="absolute bottom-[-60px] right-[-60px] w-52 h-52 rounded-full bg-info/10 blur-3xl" />
-
+    <div className="min-h-dvh flex flex-col items-center justify-center px-8 relative overflow-hidden bg-[#060912]">
+      {/* Premium Background Elements */}
+      <div className="absolute top-[-10%] left-[-20%] w-[100%] h-[60%] bg-primary/10 rounded-full blur-[120px] animate-pulse" />
+      <div className="absolute bottom-[-10%] right-[-20%] w-[100%] h-[60%] bg-info/5 rounded-full blur-[120px]" />
+      
       <div className="relative z-10 flex flex-col items-center text-center max-w-sm w-full">
-        {/* Logo */}
-        <div className="w-20 h-20 rounded-2xl bg-primary/20 flex items-center justify-center mb-6 glow-pulse">
-          <Wallet className="w-10 h-10 text-primary" />
+        {/* Animated Logo */}
+        <div className="w-24 h-24 rounded-[2.5rem] bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center mb-10 shadow-2xl shadow-primary/30 rotate-12 hover:rotate-0 transition-all duration-500 group cursor-pointer">
+          <Wallet className="w-12 h-12 text-white group-hover:scale-110 transition-transform" />
         </div>
 
-        {/* Title */}
-        <h1 className="text-3xl font-bold mb-2">
-          <span className="gradient-text">MisFinanzas</span>
+        {/* Title & Tagline */}
+        <h1 className="text-5xl font-black mb-4 tracking-tighter">
+          <span className="text-white">Mis</span>
+          <span className="text-primary-light">Finanzas</span>
         </h1>
-        <p className="text-muted text-sm mb-10 leading-relaxed">
-          Controlá tus gastos e ingresos personales
-          <br />
-          de forma simple y rápida
+        <p className="text-muted/60 text-sm mb-12 font-medium leading-relaxed max-w-[280px]">
+          La forma más inteligente y elegante de controlar tu dinero.
         </p>
 
-        {/* Features */}
-        <div className="glass-card p-5 w-full mb-8 space-y-3">
+        {/* Premium Features Card */}
+        <div className="glass-card p-8 w-full mb-10 space-y-6 border-white/5 bg-white/[0.02] backdrop-blur-3xl">
           {[
-            { icon: "📊", text: "Registrá gastos e ingresos diarios" },
-            { icon: "💳", text: "Controlá tus compras en cuotas" },
-            { icon: "📈", text: "Visualizá estadísticas y balances" },
+            { icon: "⚡", title: "Rápido", text: "Registros en segundos" },
+            { icon: "🛡️", title: "Seguro", text: "Tus datos están encriptados" },
+            { icon: "📊", title: "Visual", text: "Gráficos que dicen la verdad" },
           ].map((item, i) => (
-            <div key={i} className="flex items-center gap-3 text-sm text-muted">
-              <span className="text-lg">{item.icon}</span>
-              <span>{item.text}</span>
+            <div key={i} className="flex items-center gap-4 text-left group">
+              <div className="w-10 h-10 rounded-xl bg-white/[0.03] flex items-center justify-center text-xl group-hover:bg-primary/10 transition-colors border border-white/5">
+                {item.icon}
+              </div>
+              <div>
+                <p className="text-[10px] font-black text-primary-light uppercase tracking-widest">{item.title}</p>
+                <p className="text-xs font-bold text-muted/80">{item.text}</p>
+              </div>
             </div>
           ))}
         </div>
@@ -44,9 +48,9 @@ export default function LoginPage() {
         <button
           onClick={() => signIn("google", { callbackUrl: "/" })}
           id="google-sign-in-btn"
-          className="w-full flex items-center justify-center gap-3 bg-white text-gray-800 font-semibold py-3.5 px-6 rounded-xl hover:bg-gray-100 active:scale-[0.98] transition-all duration-200 shadow-lg shadow-white/10"
+          className="w-full flex items-center justify-center gap-4 bg-white text-black font-black py-5 px-8 rounded-3xl hover:bg-gray-100 active:scale-[0.96] transition-all duration-300 shadow-2xl shadow-white/5 text-sm uppercase tracking-widest"
         >
-          <svg className="w-5 h-5" viewBox="0 0 24 24">
+          <svg className="w-6 h-6" viewBox="0 0 24 24">
             <path
               d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
               fill="#4285F4"
@@ -64,11 +68,11 @@ export default function LoginPage() {
               fill="#EA4335"
             />
           </svg>
-          Continuar con Google
+          Empezar ahora
         </button>
 
-        <p className="text-muted/50 text-xs mt-8">
-          Tus datos están seguros y protegidos
+        <p className="text-muted/30 text-[9px] mt-10 font-black uppercase tracking-[0.3em]">
+          Powered by Next.js & MongoDB
         </p>
       </div>
     </div>
