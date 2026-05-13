@@ -12,6 +12,7 @@ import {
   ChevronRight,
   ArrowUpRight,
   ArrowDownRight,
+  CreditCard,
 } from "lucide-react";
 import { formatMoney, formatDateShort, getCategoryIcon } from "@/lib/utils";
 import Link from "next/link";
