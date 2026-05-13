@@ -190,7 +190,9 @@ export default function Dashboard() {
                     <div className="w-11 h-11 rounded-2xl bg-white/5 flex items-center justify-center text-lg shrink-0">{getCategoryIcon(mov.categoria)}</div>
                     <div className="flex-1 min-w-0">
                       <p className="font-bold truncate text-[14px] text-white/95">{mov.descripcion}</p>
-                      <p className="text-[9px] font-bold text-muted uppercase tracking-widest mt-1 opacity-60">{mov.categoria}</p>
+                      <p className="text-[8px] font-bold text-muted uppercase tracking-widest mt-1 opacity-60">
+                        {formatDateShort(mov.fecha)} · {mov.categoria}
+                      </p>
                     </div>
                     <div className="text-right">
                       <p className={`font-black text-[15px] tracking-tight ${mov.tipo === "ingreso" ? "text-success" : "text-white"}`}>

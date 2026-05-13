@@ -20,10 +20,9 @@ export function formatDate(dateStr: string): string {
 
 export function formatDateShort(dateStr: string): string {
   const date = new Date(dateStr);
-  return new Intl.DateTimeFormat("es-AR", {
-    day: "numeric",
-    month: "short",
-  }).format(date);
+  const day = date.toLocaleDateString("es-AR", { day: "2-digit" });
+  const month = date.toLocaleDateString("es-AR", { month: "2-digit" });
+  return `${day}/${month}`;
 }
 
 export function getMonthName(month: number): string {
