@@ -9,7 +9,7 @@
   --color-foreground: #FFFFFF;
   --color-muted: #777777;
   --color-primary: #FFFFFF;
-  
+
   --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
 }
 
@@ -20,7 +20,7 @@ body {
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
   /* Punto medio de espaciado superior */
-  padding-top: calc(2rem + env(safe-area-inset-top, 44px)); 
+  padding-top: calc(2rem + env(safe-area-inset-top, 44px));
   padding-bottom: calc(8rem + env(safe-area-inset-bottom, 34px));
 }
 
@@ -76,7 +76,11 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.2em;
   width: 100%;
-  transition: all 0.3s active:scale-95;
+  transition: all 0.3s ease;
+}
+
+.btn-premium:active {
+  transform: scale(0.95);
 }
 
 .bottom-nav-fixed {
@@ -88,9 +92,23 @@ body {
 }
 
 @keyframes slideIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-::-webkit-scrollbar { width: 0px; }
-input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+::-webkit-scrollbar {
+  width: 0px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
