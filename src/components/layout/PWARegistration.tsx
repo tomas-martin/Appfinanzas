@@ -1,0 +1,30 @@
+"use client";
+
+import { useEffect } from "react";
+
+export default function PWARegistration() {
+  useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      "serviceWorker" in navigator &&
+      window.serwist === undefined
+    ) {
+      navigator.serviceWorker
+        .register("/sw.js")
+        .then((registration) => {
+          console.log("SW registered: ", registration);
+        })
+        .catch((registrationError) => {
+          console.log("SW registration failed: ", registrationError);
+        });
+    }
+  }, []);
+
+  return null;
+}
+
+declare global {
+  interface Window {
+    serwist: any;
+  }
+}
