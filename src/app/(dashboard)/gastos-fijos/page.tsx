@@ -109,9 +109,9 @@ export default function GastosFijosPage() {
           const currentMonth = new Date().getMonth();
           const currentYear = new Date().getFullYear();
           const lastPaidDate = g.ultimoPago ? new Date(g.ultimoPago) : null;
-          const isPaidThisMonth = lastPaidDate && 
+          const isPaidThisMonth = !!(lastPaidDate && 
                                   lastPaidDate.getMonth() === currentMonth && 
-                                  lastPaidDate.getFullYear() === currentYear;
+                                  lastPaidDate.getFullYear() === currentYear);
 
           return (
             <div key={g._id} className={`premium-card transition-all ${!g.activo ? "opacity-30" : ""} ${editId === g._id ? "p-6 bg-[#151515]" : "p-4"}`}>
