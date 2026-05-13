@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { Trash2, Pencil, Filter, X, Search, ChevronLeft } from "lucide-react";
 import { formatMoney, formatDateShort, getCategoryIcon } from "@/lib/utils";
 import { type Moneda } from "@/types";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 interface Mov {
@@ -69,122 +68,89 @@ export default function MovimientosPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-dvh bg-[#060912]">
-        <div className="w-10 h-10 border-[3px] border-primary/20 border-t-primary rounded-full animate-spin" />
+      <div className="flex items-center justify-center min-h-dvh bg-black">
+        <div className="w-8 h-8 border-2 border-white/10 border-t-white rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="container-mobile pt-safe pb-nav fade-in">
-      <div className="flex items-center justify-between mt-12 mb-16 px-1">
-        <div className="flex items-center gap-6">
-          <button onClick={() => router.back()} className="p-3.5 rounded-[1.2rem] bg-white/[0.02] border border-white/5 text-muted/30 hover:text-primary transition-all">
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <div>
-            <p className="text-muted/20 text-[8px] font-black uppercase tracking-[0.5em] mb-1">Actividad</p>
-            <h1 className="text-2xl font-black tracking-tighter text-white/90">Historial</h1>
-          </div>
-        </div>
-        <Link
-          href="/nuevo"
-          className="bg-white text-black px-6 py-3.5 rounded-[1.2rem] text-[9px] font-black uppercase tracking-[0.3em] shadow-2xl transition-all active:scale-[0.95]"
-        >
-          + Nuevo
-        </Link>
+    <div className="container-mobile pt-safe-forced pb-safe-forced fade-up">
+      <div className="flex items-center gap-6 mb-12">
+        <button onClick={() => router.back()} className="p-4 rounded-full bg-[#111111] border border-white/5 text-white active:scale-90 transition-all">
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+        <h1 className="text-3xl font-extrabold tracking-tighter">Actividad</h1>
       </div>
 
-      <div className="space-y-10 mb-20">
-        <div className="relative group">
-          <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-muted/20 group-focus-within:text-primary transition-colors" />
+      <div className="space-y-10">
+        <div className="relative">
+          <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
           <input 
             type="text" 
-            placeholder="Buscar por nombre..." 
+            placeholder="Buscar..." 
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
-            className="w-full bg-white/[0.01] border border-white/5 rounded-[1.2rem] pl-14 pr-6 py-4 text-sm text-foreground placeholder:text-muted/10 focus:border-primary/20 transition-all outline-none shadow-inner"
+            className="w-full bg-[#111111] border border-white/5 rounded-[1.8rem] pl-14 pr-6 py-5 text-sm text-foreground placeholder:text-muted outline-none"
           />
         </div>
 
-        <div className="flex gap-2.5 overflow-x-auto pb-4 no-scrollbar">
+        <div className="flex gap-2 overflow-x-auto no-scrollbar">
           {(["todos", "ingreso", "gasto"] as const).map((f) => (
             <button
               key={f}
               onClick={() => setFiltro(f)}
-              className={`px-6 py-3.5 rounded-[1.2rem] text-[8px] font-black transition-all shrink-0 uppercase tracking-[0.4em] border ${
+              className={`px-8 py-3.5 rounded-full text-[10px] font-bold transition-all uppercase tracking-widest border ${
                 filtro === f
-                  ? "bg-white border-white text-black shadow-xl scale-105"
-                  : "bg-white/[0.01] border-white/5 text-muted/20 hover:text-muted/40"
+                  ? "bg-white border-white text-black"
+                  : "bg-[#111111] border-white/5 text-muted hover:text-white"
               }`}
             >
               {f === "todos" ? "Todos" : f === "ingreso" ? "Ingresos" : "Gastos"}
             </button>
           ))}
         </div>
-      </div>
 
-      {filtered.length === 0 ? (
-        <div className="p-24 text-center border border-dashed border-white/[0.03] rounded-[2.5rem]">
-          <p className="text-muted/10 text-[9px] font-black uppercase tracking-[0.6em]">Sin resultados</p>
-        </div>
-      ) : (
-        <div className="space-y-6">
+        <div className="space-y-4">
           {filtered.map((mov) => (
-            <div key={mov._id} className="glass-card p-5 transition-all border-white/[0.02] bg-white/[0.01] group active:scale-[0.98]">
+            <div key={mov._id} className="premium-card p-6 transition-all group">
               {editId === mov._id ? (
-                <div className="space-y-6 p-2">
-                  <div className="space-y-3">
-                    <label className="text-[9px] font-black text-muted/20 uppercase tracking-[0.4em] ml-2">Descripción</label>
-                    <input
-                      type="text"
-                      value={editData.descripcion ?? mov.descripcion}
-                      onChange={(e) => setEditData({ ...editData, descripcion: e.target.value })}
-                      className="w-full bg-white/[0.02] rounded-xl px-5 py-4 text-sm text-foreground border border-white/5 outline-none"
-                    />
-                  </div>
-                  <div className="space-y-3">
-                    <label className="text-[9px] font-black text-muted/20 uppercase tracking-[0.4em] ml-2">Monto</label>
-                    <input
-                      type="number"
-                      value={editData.monto ?? mov.monto}
-                      onChange={(e) => setEditData({ ...editData, monto: Number(e.target.value) })}
-                      className="w-full bg-white/[0.02] rounded-xl px-5 py-4 text-sm text-foreground border border-white/5 outline-none"
-                    />
-                  </div>
-                  <div className="flex gap-4 pt-4">
-                    <button onClick={() => handleEdit(mov._id)} className="flex-1 bg-white text-black text-[9px] py-4.5 rounded-xl font-black uppercase tracking-[0.3em]">Guardar</button>
-                    <button onClick={() => setEditId(null)} className="px-5 bg-white/5 text-muted/30 text-xs py-4.5 rounded-xl"><X className="w-5 h-5" /></button>
+                <div className="space-y-6">
+                  <input
+                    type="text"
+                    value={editData.descripcion ?? mov.descripcion}
+                    onChange={(e) => setEditData({ ...editData, descripcion: e.target.value })}
+                    className="w-full bg-black rounded-xl px-5 py-4 text-sm text-foreground border border-white/10 outline-none"
+                  />
+                  <input
+                    type="number"
+                    value={editData.monto ?? mov.monto}
+                    onChange={(e) => setEditData({ ...editData, monto: Number(e.target.value) })}
+                    className="w-full bg-black rounded-xl px-5 py-4 text-sm text-foreground border border-white/10 outline-none"
+                  />
+                  <div className="flex gap-3">
+                    <button onClick={() => handleEdit(mov._id)} className="flex-1 btn-apple py-4 text-[10px]">Guardar</button>
+                    <button onClick={() => setEditId(null)} className="p-4 bg-[#111111] rounded-2xl"><X className="w-5 h-5 text-muted" /></button>
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center gap-5">
-                  <div className="w-12 h-12 rounded-[1.2rem] bg-white/[0.02] flex items-center justify-center text-xl shrink-0">
+                <div className="flex items-center gap-6">
+                  <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-2xl shrink-0">
                     {getCategoryIcon(mov.categoria)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[14px] font-black truncate text-white/90 tracking-tight">
-                      {mov.descripcion}
-                    </p>
-                    <p className="text-[9px] font-black text-muted/20 uppercase tracking-[0.2em] mt-1.5">
-                      {formatDateShort(mov.fecha)} · {mov.categoria}
-                    </p>
+                    <p className="font-bold truncate text-white/90">{mov.descripcion}</p>
+                    <p className="text-[9px] font-bold text-muted uppercase tracking-wider mt-1">{formatDateShort(mov.fecha)} · {mov.categoria}</p>
                   </div>
                   <div className="text-right">
-                    <p className={`text-[15px] font-black tracking-tighter ${mov.tipo === "ingreso" ? "text-success" : "text-white"}`}>
-                      {mov.tipo === "ingreso" ? "+" : ""}
-                      {formatMoney(mov.monto, mov.moneda)}
+                    <p className={`font-bold tracking-tight ${mov.tipo === "ingreso" ? "text-success" : "text-white"}`}>
+                      {mov.tipo === "ingreso" ? "+" : ""}{formatMoney(mov.monto, mov.moneda)}
                     </p>
-                    {mov.moneda === "USD" && mov.montoARS && (
-                      <p className="text-[8px] font-black text-muted/10 mt-1 uppercase tracking-widest">
-                        ≈ {formatMoney(mov.montoARS)}
-                      </p>
-                    )}
                     <div className="flex items-center justify-end gap-3 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button onClick={() => { setEditId(mov._id); setEditData({ descripcion: mov.descripcion, monto: mov.monto }); }}
-                        className="p-2 rounded-lg text-muted/20 hover:text-primary transition-all"><Pencil className="w-3.5 h-3.5" /></button>
+                        className="text-muted hover:text-white"><Pencil className="w-3.5 h-3.5" /></button>
                       <button onClick={() => handleDelete(mov._id)}
-                        className="p-2 rounded-lg text-muted/20 hover:text-danger transition-all"><Trash2 className="w-3.5 h-3.5" /></button>
+                        className="text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
                     </div>
                   </div>
                 </div>
@@ -192,7 +158,7 @@ export default function MovimientosPage() {
             </div>
           ))}
         </div>
-      )}
+      </div>
     </div>
   );
 }
