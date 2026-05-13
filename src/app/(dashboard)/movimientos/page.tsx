@@ -34,7 +34,8 @@ export default function MovimientosPage() {
     try {
       const now = new Date();
       const res = await fetch(
-        `/api/movimientos?mes=${now.getMonth()}&anio=${now.getFullYear()}`
+        `/api/movimientos?mes=${now.getMonth()}&anio=${now.getFullYear()}`,
+        { cache: "no-store" }
       );
       const data = await res.json();
       setMovimientos(Array.isArray(data) ? data : []);

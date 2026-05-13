@@ -62,9 +62,9 @@ export default function DashboardPage() {
         const anio = now.getFullYear();
 
         const [movRes, fijosRes, comprasRes] = await Promise.all([
-          fetch(`/api/movimientos?mes=${mes}&anio=${anio}`),
-          fetch("/api/gastos-fijos"),
-          fetch("/api/compras"),
+          fetch(`/api/movimientos?mes=${mes}&anio=${anio}`, { cache: "no-store" }),
+          fetch("/api/gastos-fijos", { cache: "no-store" }),
+          fetch("/api/compras", { cache: "no-store" }),
         ]);
 
         const movimientos = await movRes.json();
@@ -124,78 +124,84 @@ export default function DashboardPage() {
   }, []);
 
   const firstName = session?.user?.name?.split(" ")[0] || "Usuario";
+  const userImage = session?.user?.image;
 
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-dvh bg-background">
-        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        <div className="w-10 h-10 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="container-mobile pt-10 pb-36 fade-in">
+    <div className="container-mobile pt-12 pb-40 fade-in">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8 px-1">
+      <div className="flex items-center justify-between mb-10 px-1">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white font-black text-xl shadow-lg shadow-primary/20">
-            {firstName[0]}
-          </div>
+          {userImage ? (
+            <div className="relative group">
+              <div className="absolute inset-0 bg-primary/20 blur-lg rounded-full group-hover:bg-primary/40 transition-all" />
+              <img 
+                src={userImage} 
+                alt={firstName} 
+                className="relative w-14 h-14 rounded-2xl object-cover border-2 border-white/10 shadow-2xl"
+              />
+            </div>
+          ) : (
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white font-black text-2xl shadow-xl shadow-primary/20">
+              {firstName[0]}
+            </div>
+          )}
           <div>
-            <p className="text-muted/60 text-[10px] font-black tracking-[0.2em] uppercase">Hola, de nuevo</p>
-            <h1 className="text-2xl font-black tracking-tight">{firstName}</h1>
+            <p className="text-muted/40 text-[10px] font-black tracking-[0.25em] uppercase mb-0.5">Bienvenido,</p>
+            <h1 className="text-3xl font-black tracking-tight">{firstName}</h1>
           </div>
         </div>
         <button
           onClick={() => signOut({ callbackUrl: "/login" })}
-          id="logout-btn"
-          className="p-3 rounded-2xl bg-surface-light/30 border border-white/5 text-muted hover:text-danger hover:bg-danger/10 transition-all active:scale-90"
+          className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/5 text-muted/50 hover:text-danger hover:bg-danger/10 transition-all active:scale-90"
         >
           <LogOut className="w-5 h-5" />
         </button>
       </div>
 
       {/* Balance Card */}
-      <div className="glass-card p-8 mb-8 relative overflow-hidden group border-white/10">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-[80px] -mr-32 -mt-32 animate-pulse" />
-        <div className="absolute bottom-0 left-0 w-40 h-40 bg-info/10 rounded-full blur-[60px] -ml-20 -mb-20" />
+      <div className="glass-card p-10 mb-10 relative overflow-hidden group border-white/10">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-primary/20 rounded-full blur-[100px] -mr-40 -mt-40 animate-pulse" />
         
-        <div className="relative z-10">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-muted/70 text-[10px] font-black uppercase tracking-[0.3em]">
+        <div className="relative z-10 flex flex-col items-center text-center">
+          <div className="px-4 py-1.5 rounded-full bg-white/[0.05] border border-white/5 mb-6 backdrop-blur-md">
+            <p className="text-muted/60 text-[10px] font-black uppercase tracking-[0.3em]">
               Balance Disponible
             </p>
-            <Wallet className="w-4 h-4 text-muted/30" />
           </div>
-          <p
-            className={`text-5xl font-black mb-10 tracking-tighter ${
-              data.balance >= 0 ? "text-foreground" : "text-danger"
-            }`}
-          >
-            {formatMoney(data.balance)}
-          </p>
           
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1 p-4 rounded-3xl bg-white/[0.03] border border-white/5 backdrop-blur-md">
+          <h2 className={`text-6xl font-black mb-12 tracking-tighter ${data.balance >= 0 ? "text-foreground" : "text-danger"}`}>
+            {formatMoney(data.balance)}
+          </h2>
+          
+          <div className="grid grid-cols-2 gap-4 w-full">
+            <div className="flex flex-col items-center gap-1.5 p-5 rounded-3xl bg-white/[0.02] border border-white/5 backdrop-blur-xl">
               <div className="flex items-center gap-2 mb-1">
-                <div className="p-1.5 rounded-lg bg-success/20">
-                  <ArrowUpRight className="w-3.5 h-3.5 text-success" />
+                <div className="p-1.5 rounded-xl bg-success/10 text-success">
+                  <ArrowUpRight className="w-4 h-4" />
                 </div>
-                <p className="text-[9px] font-black text-success/70 uppercase tracking-widest">Ingresos</p>
+                <p className="text-[9px] font-black text-success/60 uppercase tracking-widest">Ingresos</p>
               </div>
-              <p className="text-lg font-black text-success tracking-tight">
+              <p className="text-xl font-black text-success tracking-tight">
                 {formatMoney(data.ingresos)}
               </p>
             </div>
             
-            <div className="flex flex-col gap-1 p-4 rounded-3xl bg-white/[0.03] border border-white/5 backdrop-blur-md">
+            <div className="flex flex-col items-center gap-1.5 p-5 rounded-3xl bg-white/[0.02] border border-white/5 backdrop-blur-xl">
               <div className="flex items-center gap-2 mb-1">
-                <div className="p-1.5 rounded-lg bg-danger/20">
-                  <ArrowDownRight className="w-3.5 h-3.5 text-danger" />
+                <div className="p-1.5 rounded-xl bg-danger/10 text-danger">
+                  <ArrowDownRight className="w-4 h-4" />
                 </div>
-                <p className="text-[9px] font-black text-danger/70 uppercase tracking-widest">Gastos</p>
+                <p className="text-[9px] font-black text-danger/60 uppercase tracking-widest">Gastos</p>
               </div>
-              <p className="text-lg font-black text-danger tracking-tight">
+              <p className="text-xl font-black text-danger tracking-tight">
                 {formatMoney(data.gastos)}
               </p>
             </div>
@@ -204,92 +210,74 @@ export default function DashboardPage() {
       </div>
 
       {/* Quick Stats Row */}
-      <div className="grid grid-cols-2 gap-4 mb-10">
-        <Link href="/tarjetas" className="glass-card p-5 active:scale-[0.96] transition-all bg-white/[0.02] border-white/5 hover:border-warning/20">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2.5 rounded-2xl bg-warning/10 text-warning">
+      <div className="grid grid-cols-2 gap-5 mb-12">
+        <Link href="/tarjetas" className="glass-card p-6 active:scale-[0.96] transition-all bg-white/[0.02] border-white/5 hover:border-warning/30 group">
+          <div className="flex items-center gap-4 mb-5">
+            <div className="p-3 rounded-2xl bg-warning/10 text-warning group-hover:scale-110 transition-transform">
               <CreditCard className="w-5 h-5" />
             </div>
-            <span className="text-[10px] font-black text-muted/80 uppercase tracking-widest">Tarjetas</span>
+            <span className="text-[10px] font-black text-muted/60 uppercase tracking-widest">Tarjetas</span>
           </div>
-          <p className="text-2xl font-black text-warning tracking-tighter">
+          <p className="text-2xl font-black text-warning tracking-tighter mb-1">
             {formatMoney(data.cuotasPendientes)}
           </p>
-          <div className="flex items-center gap-1.5 mt-2">
-            <span className="w-1 h-1 rounded-full bg-warning/40 animate-pulse" />
-            <p className="text-[9px] text-muted/50 font-bold uppercase tracking-widest">Deuda proyectada</p>
-          </div>
+          <p className="text-[9px] text-muted/30 font-bold uppercase tracking-widest">Deuda Total</p>
         </Link>
         
-        <Link href="/gastos-fijos" className="glass-card p-5 active:scale-[0.96] transition-all bg-white/[0.02] border-white/5 hover:border-info/20">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2.5 rounded-2xl bg-info/10 text-info">
+        <Link href="/gastos-fijos" className="glass-card p-6 active:scale-[0.96] transition-all bg-white/[0.02] border-white/5 hover:border-info/30 group">
+          <div className="flex items-center gap-4 mb-5">
+            <div className="p-3 rounded-2xl bg-info/10 text-info group-hover:scale-110 transition-transform">
               <CalendarClock className="w-5 h-5" />
             </div>
-            <span className="text-[10px] font-black text-muted/80 uppercase tracking-widest">Fijos</span>
+            <span className="text-[10px] font-black text-muted/60 uppercase tracking-widest">Fijos</span>
           </div>
-          <p className="text-2xl font-black text-info tracking-tighter">
-            {data.proximosVencimientos.length} <span className="text-xs font-medium text-muted/40 font-sans">vence</span>
+          <p className="text-2xl font-black text-info tracking-tighter mb-1">
+            {data.proximosVencimientos.length} <span className="text-xs font-medium text-muted/40 lowercase">pagos</span>
           </p>
-          <div className="flex items-center gap-1.5 mt-2">
-            <span className="w-1 h-1 rounded-full bg-info/40 animate-pulse" />
-            <p className="text-[9px] text-muted/50 font-bold uppercase tracking-widest">En los próximos días</p>
-          </div>
+          <p className="text-[9px] text-muted/30 font-bold uppercase tracking-widest">Pendientes</p>
         </Link>
       </div>
 
       {/* Last Movements */}
-      <div className="mb-10">
+      <div className="mb-12">
         <div className="flex items-center justify-between mb-6 px-1">
-          <h2 className="text-xl font-black tracking-tight">Recientes</h2>
+          <h2 className="text-xl font-black tracking-tight">Movimientos</h2>
           <Link
             href="/movimientos"
-            className="text-[10px] font-black text-primary uppercase tracking-[0.2em] px-4 py-2 rounded-full bg-primary/10 hover:bg-primary/20 transition-all"
+            className="text-[9px] font-black text-primary/60 uppercase tracking-[0.2em] px-4 py-2 rounded-xl bg-primary/5 hover:bg-primary/10 transition-all border border-primary/10"
           >
             Ver Todo
           </Link>
         </div>
 
         {data.ultimosMovimientos.length === 0 ? (
-          <div className="glass-card p-12 text-center border-dashed border-white/10 bg-transparent">
-            <div className="w-20 h-20 bg-surface-light/30 rounded-3xl flex items-center justify-center mx-auto mb-6 rotate-3">
+          <div className="glass-card p-16 text-center border-dashed border-white/5 bg-transparent">
+            <div className="w-20 h-20 bg-surface-light/20 rounded-3xl flex items-center justify-center mx-auto mb-6">
               <TrendingUp className="w-10 h-10 text-muted/10" />
             </div>
-            <p className="text-muted/60 text-sm font-bold">No hay movimientos este mes</p>
-            <Link
-              href="/nuevo"
-              className="text-primary text-[10px] font-black uppercase tracking-[0.2em] mt-4 inline-block hover:underline"
-            >
-              Crear el primero →
-            </Link>
+            <p className="text-muted/30 text-[10px] font-black uppercase tracking-widest">Sin actividad reciente</p>
           </div>
         ) : (
           <div className="space-y-4">
             {data.ultimosMovimientos.map((mov) => (
               <div
                 key={mov._id}
-                className="glass-card p-4 flex items-center gap-4 hover:bg-white/[0.04] transition-all cursor-pointer group border-white/5 active:scale-[0.98]"
+                className="glass-card p-4 flex items-center gap-4 hover:bg-white/[0.02] transition-all cursor-pointer group border-white/5 active:scale-[0.98]"
               >
-                <div className="w-14 h-14 rounded-2xl bg-surface-light/50 flex items-center justify-center text-3xl shadow-inner group-hover:scale-110 transition-transform">
+                <div className="w-14 h-14 rounded-2xl bg-surface-light/30 flex items-center justify-center text-3xl shadow-inner group-hover:scale-110 transition-transform">
                   {getCategoryIcon(mov.categoria)}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-base font-black truncate tracking-tight">
+                  <p className="text-[15px] font-black truncate tracking-tight">
                     {mov.descripcion}
                   </p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <p className="text-[10px] font-bold text-muted/40 uppercase tracking-widest">
-                      {formatDateShort(mov.fecha)}
-                    </p>
-                    <span className="w-1 h-1 rounded-full bg-muted/20" />
-                    <p className="text-[10px] font-black text-muted/60 uppercase tracking-widest">
-                      {mov.categoria}
-                    </p>
-                  </div>
+                  <p className="text-[9px] font-black text-muted/40 uppercase tracking-widest mt-1">
+                    {formatDateShort(mov.fecha)} · {mov.categoria}
+                  </p>
                 </div>
                 <div className="text-right">
                   <p
-                    className={`text-lg font-black tracking-tighter ${
+                    className={`text-[17px] font-black tracking-tighter ${
                       mov.tipo === "ingreso" ? "text-success" : "text-foreground"
                     }`}
                   >
@@ -297,7 +285,7 @@ export default function DashboardPage() {
                     {formatMoney(mov.monto, mov.moneda as "ARS" | "USD")}
                   </p>
                   {mov.moneda === "USD" && mov.montoARS && (
-                    <p className="text-[10px] font-bold text-muted/30 mt-0.5">
+                    <p className="text-[9px] font-black text-muted/20 mt-0.5">
                       ≈ {formatMoney(mov.montoARS)}
                     </p>
                   )}
@@ -310,29 +298,31 @@ export default function DashboardPage() {
 
       {/* Upcoming fixed expenses */}
       {data.proximosVencimientos.length > 0 && (
-        <div className="mb-10">
-          <h2 className="text-xl font-black tracking-tight mb-6 px-1">Próximos pagos</h2>
+        <div className="mb-12">
+          <h2 className="text-xl font-black tracking-tight mb-6 px-1">Próximos Pagos</h2>
           <div className="space-y-4">
             {data.proximosVencimientos.map((gasto) => (
               <div
                 key={gasto._id}
-                className="glass-card p-5 flex items-center justify-between border-l-[6px] border-l-info bg-info/[0.03] hover:bg-info/[0.06] transition-all"
+                className="glass-card p-5 flex items-center justify-between bg-info/[0.02] border-white/5 hover:bg-info/[0.04] transition-all"
               >
-                <div>
-                  <p className="text-base font-black tracking-tight">{gasto.nombre}</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <CalendarClock className="w-3.5 h-3.5 text-info/50" />
-                    <p className="text-[10px] font-black text-info/60 uppercase tracking-widest">
-                      Día {gasto.diaVencimiento}
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-info/10 flex items-center justify-center">
+                    <CalendarClock className="w-6 h-6 text-info/50" />
+                  </div>
+                  <div>
+                    <p className="text-[15px] font-black tracking-tight">{gasto.nombre}</p>
+                    <p className="text-[9px] font-black text-info/40 uppercase tracking-widest mt-1">
+                      Vence el día {gasto.diaVencimiento}
                     </p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-lg font-black text-foreground tracking-tighter">
+                  <p className="text-[17px] font-black text-foreground tracking-tighter">
                     {formatMoney(gasto.monto, gasto.moneda as "ARS" | "USD")}
                   </p>
                   {gasto.moneda === "USD" && gasto.montoARS && (
-                    <p className="text-[10px] font-bold text-muted/30 mt-0.5">
+                    <p className="text-[9px] font-black text-muted/20 mt-0.5">
                       ≈ {formatMoney(gasto.montoARS)}
                     </p>
                   )}

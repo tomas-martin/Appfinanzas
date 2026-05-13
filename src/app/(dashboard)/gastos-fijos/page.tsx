@@ -29,7 +29,7 @@ export default function GastosFijosPage() {
 
   async function fetchData() {
     try {
-      const res = await fetch("/api/gastos-fijos");
+      const res = await fetch("/api/gastos-fijos", { cache: "no-store" });
       const data = await res.json();
       setGastos(Array.isArray(data) ? data : []);
     } catch (err) { console.error(err); }
