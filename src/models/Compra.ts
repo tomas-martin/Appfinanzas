@@ -2,7 +2,7 @@ import mongoose, { Schema, models } from "mongoose";
 
 const CompraSchema = new Schema(
   {
-    userId: { type: String, required: true, index: true },
+    userEmail: { type: String, required: true, index: true },
     descripcion: { type: String, required: true },
     montoTotal: { type: Number, required: true },
     moneda: { type: String, enum: ["ARS", "USD"], default: "ARS" },

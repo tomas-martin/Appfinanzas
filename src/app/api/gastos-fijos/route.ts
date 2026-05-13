@@ -12,7 +12,7 @@ export async function GET() {
 
   await dbConnect();
 
-  const gastosFijos = await GastoFijo.find({ userId: session.user.id })
+  const gastosFijos = await GastoFijo.find({ userEmail: session.user.email })
     .sort({ diaVencimiento: 1 })
     .lean();
 
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
   const gastoFijo = await GastoFijo.create({
     ...body,
-    userId: session.user.id,
+    userEmail: session.user.email,
   });
 
   return Response.json(gastoFijo, { status: 201 });

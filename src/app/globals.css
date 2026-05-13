@@ -47,16 +47,27 @@ body {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* Scrollbar styling */
+/* Scrollbar styling - Premium & Subtle */
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* Glassmorphism card */
@@ -180,10 +191,10 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
-/* Mobile-first layout helper */
+/* Mobile-first layout helper - Refined Spacing */
 .container-mobile {
   width: 100%;
-  max-width: 500px;
+  max-width: 520px;
   margin: 0 auto;
-  padding: 0 1.25rem;
+  padding: 0 1.75rem;
 }

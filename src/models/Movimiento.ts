@@ -2,7 +2,7 @@ import mongoose, { Schema, models } from "mongoose";
 
 const MovimientoSchema = new Schema(
   {
-    userId: { type: String, required: true, index: true },
+    userEmail: { type: String, required: true, index: true },
     tipo: { type: String, enum: ["gasto", "ingreso"], required: true },
     monto: { type: Number, required: true },
     moneda: { type: String, enum: ["ARS", "USD"], default: "ARS" },

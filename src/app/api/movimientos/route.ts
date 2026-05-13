@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
   const anio = searchParams.get("anio");
   const tipo = searchParams.get("tipo");
 
-  const filter: Record<string, unknown> = { userId: session.user.id };
+  const filter: Record<string, unknown> = { userEmail: session.user.email };
 
   if (mes && anio) {
     const start = new Date(Number(anio), Number(mes), 1);
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
   const movimiento = await Movimiento.create({
     ...body,
-    userId: session.user.id,
+    userEmail: session.user.email,
   });
 
   return Response.json(movimiento, { status: 201 });

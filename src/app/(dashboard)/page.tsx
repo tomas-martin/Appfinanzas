@@ -166,40 +166,40 @@ export default function DashboardPage() {
         </button>
       </div>
 
-      {/* Balance Card - More Space & Better Pill */}
-      <div className="glass-card p-12 mb-12 relative overflow-hidden group border-white/10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)]">
-        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-primary/10 rounded-full blur-[120px] -mr-48 -mt-48 animate-pulse" />
+      {/* Balance Card - Ultra Premium Refinement */}
+      <div className="glass-card p-14 mb-16 relative overflow-hidden group border-white/[0.08] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.7)]">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[140px] -mr-64 -mt-64 animate-pulse" />
         
         <div className="relative z-10 flex flex-col items-center text-center">
-          <div className="px-6 py-2 rounded-full bg-white/[0.04] border border-white/5 mb-8 backdrop-blur-3xl shadow-inner">
-            <p className="text-muted/50 text-[10px] font-black uppercase tracking-[0.4em]">
-              Balance Disponible
+          <div className="px-5 py-2 rounded-full bg-white/[0.03] border border-white/5 mb-10 backdrop-blur-3xl shadow-inner">
+            <p className="text-muted/40 text-[9px] font-black uppercase tracking-[0.5em]">
+              Capital Total
             </p>
           </div>
           
-          <h2 className={`text-7xl font-black mb-14 tracking-tighter ${data.balance >= 0 ? "text-white" : "text-danger"} drop-shadow-2xl`}>
+          <h2 className={`text-7xl font-black mb-16 tracking-tighter drop-shadow-2xl bg-gradient-to-b from-white to-white/70 bg-clip-text text-transparent`}>
             {formatMoney(data.balance)}
           </h2>
           
-          <div className="grid grid-cols-2 gap-6 w-full">
-            <div className="flex flex-col items-center gap-2 p-6 rounded-[2.5rem] bg-white/[0.02] border border-white/5 backdrop-blur-2xl shadow-xl">
-              <div className="flex items-center gap-2.5 mb-1.5">
-                <div className="p-2 rounded-xl bg-success/10 text-success shadow-lg shadow-success/5">
-                  <ArrowUpRight className="w-4 h-4 stroke-[3px]" />
+          <div className="grid grid-cols-2 gap-8 w-full">
+            <div className="flex flex-col items-center gap-3 p-7 rounded-[2.5rem] bg-white/[0.01] border border-white/5 backdrop-blur-2xl hover:bg-white/[0.03] transition-all">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-success/10 text-success shadow-lg shadow-success/10">
+                  <TrendingUp className="w-4 h-4 stroke-[3px]" />
                 </div>
-                <p className="text-[10px] font-black text-success/50 uppercase tracking-[0.2em]">Ingresos</p>
+                <p className="text-[10px] font-black text-success/40 uppercase tracking-[0.2em]">Ingresos</p>
               </div>
               <p className="text-2xl font-black text-success tracking-tight">
                 {formatMoney(data.ingresos)}
               </p>
             </div>
             
-            <div className="flex flex-col items-center gap-2 p-6 rounded-[2.5rem] bg-white/[0.02] border border-white/5 backdrop-blur-2xl shadow-xl">
-              <div className="flex items-center gap-2.5 mb-1.5">
-                <div className="p-2 rounded-xl bg-danger/10 text-danger shadow-lg shadow-danger/5">
-                  <ArrowDownRight className="w-4 h-4 stroke-[3px]" />
+            <div className="flex flex-col items-center gap-3 p-7 rounded-[2.5rem] bg-white/[0.01] border border-white/5 backdrop-blur-2xl hover:bg-white/[0.03] transition-all">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-danger/10 text-danger shadow-lg shadow-danger/10">
+                  <TrendingDown className="w-4 h-4 stroke-[3px]" />
                 </div>
-                <p className="text-[10px] font-black text-danger/50 uppercase tracking-[0.2em]">Gastos</p>
+                <p className="text-[10px] font-black text-danger/40 uppercase tracking-[0.2em]">Gastos</p>
               </div>
               <p className="text-2xl font-black text-danger tracking-tight">
                 {formatMoney(data.gastos)}
@@ -209,37 +209,44 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Quick Stats Row - More Separation */}
-      <div className="grid grid-cols-2 gap-6 mb-14">
-        <Link href="/tarjetas" className="glass-card p-7 active:scale-[0.96] transition-all bg-white/[0.02] border-white/5 hover:border-warning/30 group shadow-xl">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="p-3.5 rounded-2xl bg-warning/10 text-warning group-hover:rotate-6 transition-transform shadow-lg shadow-warning/5">
-              <CreditCard className="w-6 h-6" />
+      {/* Quick Stats Row - Increased Separation */}
+      <div className="grid grid-cols-2 gap-8 mb-20">
+        <Link href="/tarjetas" className="glass-card p-8 active:scale-[0.96] transition-all bg-white/[0.01] border-white/5 hover:border-warning/30 group shadow-2xl relative overflow-hidden">
+          <div className="absolute inset-0 bg-warning/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="relative z-10">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="p-4 rounded-2xl bg-warning/10 text-warning group-hover:scale-110 transition-transform shadow-xl shadow-warning/10">
+                <CreditCard className="w-6 h-6" />
+              </div>
+              <span className="text-[11px] font-black text-muted/40 uppercase tracking-[0.2em]">Tarjetas</span>
             </div>
-            <span className="text-[11px] font-black text-muted/50 uppercase tracking-[0.2em]">Tarjetas</span>
+            <p className="text-3xl font-black text-warning tracking-tighter mb-2">
+              {formatMoney(data.cuotasPendientes)}
+            </p>
+            <p className="text-[10px] text-muted/20 font-black uppercase tracking-widest">Saldo a pagar</p>
           </div>
-          <p className="text-2xl font-black text-warning tracking-tighter mb-1.5">
-            {formatMoney(data.cuotasPendientes)}
-          </p>
-          <p className="text-[9px] text-muted/20 font-black uppercase tracking-widest">Deuda Total</p>
         </Link>
         
-        <Link href="/gastos-fijos" className="glass-card p-7 active:scale-[0.96] transition-all bg-white/[0.02] border-white/5 hover:border-info/30 group shadow-xl">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="p-3.5 rounded-2xl bg-info/10 text-info group-hover:-rotate-6 transition-transform shadow-lg shadow-info/5">
-              <CalendarClock className="w-6 h-6" />
+        <Link href="/gastos-fijos" className="glass-card p-8 active:scale-[0.96] transition-all bg-white/[0.01] border-white/5 hover:border-info/30 group shadow-2xl relative overflow-hidden">
+          <div className="absolute inset-0 bg-info/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="relative z-10">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="p-4 rounded-2xl bg-info/10 text-info group-hover:scale-110 transition-transform shadow-xl shadow-info/10">
+                <CalendarClock className="w-6 h-6" />
+              </div>
+              <span className="text-[11px] font-black text-muted/40 uppercase tracking-[0.2em]">Fijos</span>
             </div>
-            <span className="text-[11px] font-black text-muted/50 uppercase tracking-[0.2em]">Fijos</span>
+            <p className="text-3xl font-black text-info tracking-tighter mb-2">
+              {data.proximosVencimientos.length} <span className="text-xs font-medium text-muted/20 lowercase">pagos</span>
+            </p>
+            <p className="text-[10px] text-muted/20 font-black uppercase tracking-widest">Pendientes</p>
           </div>
-          <p className="text-2xl font-black text-info tracking-tighter mb-1.5">
-            {data.proximosVencimientos.length} <span className="text-xs font-medium text-muted/30 lowercase">pagos</span>
-          </p>
-          <p className="text-[9px] text-muted/20 font-black uppercase tracking-widest">Próximos</p>
         </Link>
       </div>
 
+
       {/* Last Movements */}
-      <div className="mb-12">
+      <div className="mb-20">
         <div className="flex items-center justify-between mb-6 px-1">
           <h2 className="text-xl font-black tracking-tight">Movimientos</h2>
           <Link

@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+export const dynamic = "force-dynamic";
 import { auth } from "@/lib/auth";
 import dbConnect from "@/lib/mongodb";
 import Compra from "@/models/Compra";
@@ -11,7 +12,7 @@ export async function GET() {
 
   await dbConnect();
 
-  const compras = await Compra.find({ userId: session.user.id })
+  const compras = await Compra.find({ userEmail: session.user.email })
     .sort({ fechaInicio: -1 })
     .lean();
 
@@ -37,7 +38,7 @@ export async function POST(request: NextRequest) {
 
   const compra = await Compra.create({
     ...body,
-    userId: session.user.id,
+    userEmail: session.user.email,
   });
 
   return Response.json(compra, { status: 201 });
