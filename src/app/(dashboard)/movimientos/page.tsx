@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Trash2, Pencil, Filter, X, Search, ChevronLeft } from "lucide-react";
+import { Trash2, Pencil, X, Search, ChevronLeft, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { formatMoney, formatDateShort, getCategoryIcon } from "@/lib/utils";
 import { type Moneda } from "@/types";
 import { useRouter } from "next/navigation";
@@ -75,83 +75,97 @@ export default function MovimientosPage() {
   }
 
   return (
-    <div className="container-mobile pt-safe-forced pb-safe-forced fade-up">
-      <div className="flex items-center gap-6 mb-12">
-        <button onClick={() => router.back()} className="p-4 rounded-full bg-[#111111] border border-white/5 text-white active:scale-90 transition-all">
-          <ChevronLeft className="w-5 h-5" />
+    <div className="container-mobile fade-in-up">
+      <div className="flex items-center gap-8 mb-20">
+        <button onClick={() => router.back()} className="p-5 rounded-full bg-[#111111] border border-white/5 text-white active:scale-90 transition-all">
+          <ChevronLeft className="w-6 h-6" />
         </button>
-        <h1 className="text-3xl font-extrabold tracking-tighter">Actividad</h1>
+        <h1 className="text-4xl font-extrabold tracking-tighter">Actividad</h1>
       </div>
 
-      <div className="space-y-10">
+      <div className="space-y-12">
         <div className="relative">
-          <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
+          <Search className="absolute left-8 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
           <input 
             type="text" 
-            placeholder="Buscar..." 
+            placeholder="Buscar transacciones..." 
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
-            className="w-full bg-[#111111] border border-white/5 rounded-[1.8rem] pl-14 pr-6 py-5 text-sm text-foreground placeholder:text-muted outline-none"
+            className="input-huge pl-18 pr-8"
           />
         </div>
 
-        <div className="flex gap-2 overflow-x-auto no-scrollbar">
+        <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
           {(["todos", "ingreso", "gasto"] as const).map((f) => (
             <button
               key={f}
               onClick={() => setFiltro(f)}
-              className={`px-8 py-3.5 rounded-full text-[10px] font-bold transition-all uppercase tracking-widest border ${
+              className={`px-10 py-4 rounded-full text-[11px] font-bold transition-all uppercase tracking-[0.2em] border ${
                 filtro === f
-                  ? "bg-white border-white text-black"
-                  : "bg-[#111111] border-white/5 text-muted hover:text-white"
+                  ? "bg-white border-white text-black scale-105 shadow-xl"
+                  : "bg-[#111111] border-white/5 text-muted"
               }`}
             >
-              {f === "todos" ? "Todos" : f === "ingreso" ? "Ingresos" : "Gastos"}
+              {f === "todos" ? "Todo" : f === "ingreso" ? "Ingresos" : "Gastos"}
             </button>
           ))}
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           {filtered.map((mov) => (
-            <div key={mov._id} className="premium-card p-6 transition-all group">
+            <div 
+              key={mov._id} 
+              onClick={() => editId !== mov._id && setEditId(mov._id)}
+              className={`premium-card transition-all overflow-hidden ${editId === mov._id ? "p-10 bg-[#151515] ring-2 ring-white/10" : "p-8 active:scale-95"}`}
+            >
               {editId === mov._id ? (
-                <div className="space-y-6">
-                  <input
-                    type="text"
-                    value={editData.descripcion ?? mov.descripcion}
-                    onChange={(e) => setEditData({ ...editData, descripcion: e.target.value })}
-                    className="w-full bg-black rounded-xl px-5 py-4 text-sm text-foreground border border-white/10 outline-none"
-                  />
-                  <input
-                    type="number"
-                    value={editData.monto ?? mov.monto}
-                    onChange={(e) => setEditData({ ...editData, monto: Number(e.target.value) })}
-                    className="w-full bg-black rounded-xl px-5 py-4 text-sm text-foreground border border-white/10 outline-none"
-                  />
-                  <div className="flex gap-3">
-                    <button onClick={() => handleEdit(mov._id)} className="flex-1 btn-apple py-4 text-[10px]">Guardar</button>
-                    <button onClick={() => setEditId(null)} className="p-4 bg-[#111111] rounded-2xl"><X className="w-5 h-5 text-muted" /></button>
+                <div className="space-y-10 animate-in fade-in zoom-in-95 duration-300">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-sm font-bold uppercase tracking-widest text-muted">Editar Movimiento</h3>
+                    <button onClick={(e) => { e.stopPropagation(); setEditId(null); }} className="p-2"><X className="w-6 h-6 text-muted" /></button>
+                  </div>
+                  <div className="space-y-4">
+                    <label className="text-[10px] font-bold text-muted uppercase tracking-[0.3em] ml-4">Descripción</label>
+                    <input
+                      autoFocus
+                      type="text"
+                      value={editData.descripcion ?? mov.descripcion}
+                      onChange={(e) => setEditData({ ...editData, descripcion: e.target.value })}
+                      className="w-full bg-black rounded-3xl px-8 py-6 text-lg font-bold border border-white/10 outline-none"
+                    />
+                  </div>
+                  <div className="space-y-4">
+                    <label className="text-[10px] font-bold text-muted uppercase tracking-[0.3em] ml-4">Monto</label>
+                    <input
+                      type="number"
+                      value={editData.monto ?? mov.monto}
+                      onChange={(e) => setEditData({ ...editData, monto: Number(e.target.value) })}
+                      className="w-full bg-black rounded-3xl px-8 py-6 text-lg font-bold border border-white/10 outline-none"
+                    />
+                  </div>
+                  <div className="flex gap-4 pt-4">
+                    <button onClick={(e) => { e.stopPropagation(); handleEdit(mov._id); }} className="flex-1 btn-main py-6 text-sm">Guardar</button>
+                    <button onClick={(e) => { e.stopPropagation(); handleDelete(mov._id); }} className="p-6 bg-danger/10 text-danger rounded-3xl active:scale-90"><Trash2 className="w-6 h-6" /></button>
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center gap-6">
-                  <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-2xl shrink-0">
+                <div className="flex items-center gap-8">
+                  <div className="w-16 h-16 rounded-[1.8rem] bg-white/5 flex items-center justify-center text-4xl shrink-0">
                     {getCategoryIcon(mov.categoria)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-bold truncate text-white/90">{mov.descripcion}</p>
-                    <p className="text-[9px] font-bold text-muted uppercase tracking-wider mt-1">{formatDateShort(mov.fecha)} · {mov.categoria}</p>
+                    <p className="text-xl font-bold truncate text-white/95">{mov.descripcion}</p>
+                    <div className="flex items-center gap-3 mt-1.5">
+                      <p className="text-[10px] font-bold text-muted uppercase tracking-widest">{formatDateShort(mov.fecha)}</p>
+                      <span className="w-1 h-1 rounded-full bg-white/10" />
+                      <p className="text-[10px] font-bold text-muted uppercase tracking-widest">{mov.categoria}</p>
+                    </div>
                   </div>
                   <div className="text-right">
-                    <p className={`font-bold tracking-tight ${mov.tipo === "ingreso" ? "text-success" : "text-white"}`}>
+                    <p className={`text-2xl font-bold tracking-tighter ${mov.tipo === "ingreso" ? "text-success" : "text-white"}`}>
                       {mov.tipo === "ingreso" ? "+" : ""}{formatMoney(mov.monto, mov.moneda)}
                     </p>
-                    <div className="flex items-center justify-end gap-3 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button onClick={() => { setEditId(mov._id); setEditData({ descripcion: mov.descripcion, monto: mov.monto }); }}
-                        className="text-muted hover:text-white"><Pencil className="w-3.5 h-3.5" /></button>
-                      <button onClick={() => handleDelete(mov._id)}
-                        className="text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
-                    </div>
+                    <p className="text-[9px] font-bold text-muted/20 uppercase tracking-widest mt-1.5">Ver detalles</p>
                   </div>
                 </div>
               )}
