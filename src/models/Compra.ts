@@ -14,6 +14,7 @@ const CompraSchema = new Schema(
     tasaInteres: { type: Number, default: 0 },
     tarjeta: { type: String, required: true },
     fechaInicio: { type: Date, required: true },
+    diaVencimiento: { type: Number, default: 10 },
     categoria: { type: String, required: true },
   },
   { timestamps: true }

@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Trash2, Pencil, X, Search, ChevronLeft } from "lucide-react";
+import { Trash2, Pencil, X, Search, ChevronLeft, Plus } from "lucide-react";
 import { formatMoney, formatDateShort, getCategoryIcon } from "@/lib/utils";
 import { type Moneda } from "@/types";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface Mov {
   _id: string;
@@ -69,11 +70,16 @@ export default function MovimientosPage() {
 
   return (
     <div className="container-mobile fade-up">
-      <div className="flex items-center gap-4 mt-4 mb-10">
-        <button onClick={() => router.back()} className="p-3.5 rounded-full bg-[#111111] border border-white/5 text-white active:scale-90 transition-all">
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-        <h1 className="text-3xl font-extrabold tracking-tighter">Actividad</h1>
+      <div className="flex items-center justify-between mt-4 mb-10">
+        <div className="flex items-center gap-4">
+          <button onClick={() => router.back()} className="p-3.5 rounded-full bg-[#111111] border border-white/5 text-white active:scale-90 transition-all">
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <h1 className="text-3xl font-extrabold tracking-tighter">Actividad</h1>
+        </div>
+        <Link href="/nuevo" className="w-12 h-12 rounded-full bg-white text-black flex items-center justify-center shadow-xl active:scale-90 transition-all">
+          <Plus className="w-6 h-6 stroke-[3px]" />
+        </Link>
       </div>
 
       <div className="space-y-8">
@@ -104,11 +110,11 @@ export default function MovimientosPage() {
                     <button onClick={(e) => { e.stopPropagation(); setEditId(null); }} className="p-1"><X className="w-4 h-4 text-muted" /></button>
                   </div>
                   <input autoFocus type="text" value={editData.descripcion ?? mov.descripcion} onChange={(e) => setEditData({ ...editData, descripcion: e.target.value })}
-                    className="input-premium py-3 text-sm" />
+                    className="input-premium py-2 text-sm" />
                   <input type="number" value={editData.monto ?? mov.monto} onChange={(e) => setEditData({ ...editData, monto: Number(e.target.value) })}
-                    className="input-premium py-3 text-sm" />
+                    className="input-premium py-2 text-sm" />
                   <div className="flex gap-2">
-                    <button onClick={(e) => { e.stopPropagation(); handleEdit(mov._id); }} className="flex-1 btn-premium py-3 text-[10px]">Guardar</button>
+                    <button onClick={(e) => { e.stopPropagation(); handleEdit(mov._id); }} className="flex-1 btn-premium py-2 text-[10px]">Guardar</button>
                     <button onClick={(e) => { e.stopPropagation(); handleDelete(mov._id); }} className="p-3 bg-danger/10 text-danger rounded-xl"><Trash2 className="w-4 h-4" /></button>
                   </div>
                 </div>

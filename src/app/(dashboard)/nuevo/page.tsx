@@ -17,7 +17,7 @@ export default function NuevoPage() {
   const [moneda, setMoneda] = useState<Moneda>("ARS");
   const [categoria, setCategoria] = useState("");
   const [fecha, setFecha] = useState(new Date().toISOString().split("T")[0]);
-  const [diaVencimiento, setDiaVencimiento] = useState("1");
+  const [diaVencimiento, setDiaVencimiento] = useState("10"); // Default día 10
   const [cantidadCuotas, setCantidadCuotas] = useState("1");
   const [tasaInteres, setTasaInteres] = useState("0");
   const [tarjeta, setTarjeta] = useState("");
@@ -88,6 +88,7 @@ export default function NuevoPage() {
             tasaInteres: Number(tasaInteres), 
             tarjeta, 
             fechaInicio: fecha, 
+            diaVencimiento: Number(diaVencimiento),
             categoria 
           }),
         });
@@ -106,7 +107,7 @@ export default function NuevoPage() {
   ] as const;
 
   return (
-    <div className="container-mobile fade-in-up">
+    <div className="container-mobile fade-up">
       <div className="flex items-center gap-5 mb-10">
         <button onClick={() => router.back()} className="p-4 rounded-full bg-[#111111] border border-white/5 text-white active:scale-90 transition-all">
           <ChevronLeft className="w-5 h-5" />
@@ -126,7 +127,7 @@ export default function NuevoPage() {
       <form onSubmit={handleSubmit} className="space-y-10">
         <div className="space-y-8">
           <div className="space-y-2">
-            <label className={labelClass}>{tab === "fijo" ? "Servicio" : "Descripción"}</label>
+            <label className={labelClass}>{tab === "fijo" ? "Servicio" : tab === "tarjeta" ? "Compra" : "Descripción"}</label>
             <input type="text" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} placeholder="..." required className="input-premium" />
           </div>
 
@@ -144,23 +145,21 @@ export default function NuevoPage() {
             </div>
           </div>
 
-          <div className="space-y-4">
-            <label className={labelClass}>Categoría</label>
-            <div className="grid grid-cols-2 gap-2">
-              {categorias.map((cat) => (
-                <button key={cat} type="button" onClick={() => setCategoria(cat)}
-                  className={`px-5 py-3.5 rounded-2xl text-[10px] font-bold transition-all border uppercase tracking-widest ${categoria === cat ? "bg-white border-white text-black" : "bg-[#0A0A0A] border-white/5 text-muted hover:text-white"}`}>
-                  {cat}
-                </button>
-              ))}
-            </div>
-          </div>
-
           {tab === "tarjeta" && (
-            <div className="space-y-8 pt-4">
+            <div className="space-y-8 pt-4 animate-in fade-in slide-in-from-top-4 duration-500">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <label className={labelClass}>Primer Pago</label>
+                  <input type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} className="input-premium text-[10px]" />
+                </div>
+                <div className="space-y-2">
+                  <label className={labelClass}>Vence Día</label>
+                  <input type="number" value={diaVencimiento} onChange={(e) => setDiaVencimiento(e.target.value)} min="1" max="31" className="input-premium text-center" />
+                </div>
+              </div>
               <div className="space-y-2">
-                <label className={labelClass}>Tarjeta</label>
-                <input type="text" value={tarjeta} onChange={(e) => setTarjeta(e.target.value)} placeholder="..." required className="input-premium" />
+                <label className={labelClass}>Nombre Tarjeta</label>
+                <input type="text" value={tarjeta} onChange={(e) => setTarjeta(e.target.value)} placeholder="Visa, Amex..." required className="input-premium" />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-2">
@@ -174,11 +173,23 @@ export default function NuevoPage() {
               </div>
             </div>
           )}
+
+          <div className="space-y-4">
+            <label className={labelClass}>Categoría</label>
+            <div className="grid grid-cols-2 gap-2">
+              {categorias.map((cat) => (
+                <button key={cat} type="button" onClick={() => setCategoria(cat)}
+                  className={`px-5 py-3.5 rounded-2xl text-[10px] font-bold transition-all border uppercase tracking-widest ${categoria === cat ? "bg-white border-white text-black" : "bg-[#0A0A0A] border-white/5 text-muted hover:text-white"}`}>
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
         <button type="submit" disabled={saving || !descripcion || !monto || !categoria}
           className="btn-premium py-5 disabled:opacity-20 transition-all shadow-2xl active:scale-[0.96] text-[10px] mb-8">
-          {saving ? <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin mx-auto" /> : "Confirmar"}
+          {saving ? <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin mx-auto" /> : "Confirmar Registro"}
         </button>
       </form>
     </div>
