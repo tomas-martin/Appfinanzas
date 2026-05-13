@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronLeft, Check, Wallet, CreditCard, CalendarClock, TrendingUp } from "lucide-react";
+import { ChevronLeft, Wallet, CreditCard, CalendarClock, TrendingUp } from "lucide-react";
 import { CATEGORIAS_GASTO, CATEGORIAS_INGRESO, type Moneda } from "@/types";
 import { getDolarBlue } from "@/lib/currency";
 
@@ -31,7 +31,7 @@ export default function NuevoPage() {
   }, [moneda]);
 
   const categorias = tab === "ingreso" ? CATEGORIAS_INGRESO : CATEGORIAS_GASTO;
-  const labelClass = "text-[11px] font-bold text-muted uppercase tracking-[0.4em] mb-6 ml-6 block";
+  const labelClass = "text-[10px] font-bold text-muted uppercase tracking-[0.3em] mb-3 ml-4 block";
 
   const montoNum = Number(monto) || 0;
   const montoARS = moneda === "USD" ? montoNum * tipoCambio : montoNum;
@@ -107,50 +107,49 @@ export default function NuevoPage() {
 
   return (
     <div className="container-mobile fade-in-up">
-      <div className="flex items-center gap-8 mb-20">
-        <button onClick={() => router.back()} className="p-5 rounded-full bg-[#111111] border border-white/5 text-white active:scale-90 transition-all">
-          <ChevronLeft className="w-6 h-6" />
+      <div className="flex items-center gap-5 mb-10">
+        <button onClick={() => router.back()} className="p-4 rounded-full bg-[#111111] border border-white/5 text-white active:scale-90 transition-all">
+          <ChevronLeft className="w-5 h-5" />
         </button>
-        <h1 className="text-4xl font-extrabold tracking-tighter">Registrar</h1>
+        <h1 className="text-3xl font-extrabold tracking-tighter">Registrar</h1>
       </div>
 
-      {/* Tabs - Larger and more spaced */}
-      <div className="grid grid-cols-4 gap-3 bg-[#0A0A0A] rounded-[2.5rem] p-3 mb-24 border border-white/5">
+      <div className="flex gap-2 bg-[#0A0A0A] rounded-[2rem] p-1.5 mb-12 border border-white/5">
         {tabs.map((t) => (
           <button key={t.id} onClick={() => { setTab(t.id); setCategoria(""); }}
-            className={`flex flex-col items-center justify-center gap-3 py-6 rounded-[2rem] text-[10px] font-bold transition-all uppercase tracking-widest ${tab === t.id ? "bg-white text-black shadow-2xl scale-105" : "text-muted/40"}`}>
-            <t.icon className={`w-6 h-6 ${tab === t.id ? "stroke-[3px]" : "stroke-[2px]"}`} />
+            className={`flex-1 flex flex-col items-center justify-center gap-1.5 py-4 rounded-[1.5rem] text-[8px] font-bold transition-all uppercase tracking-widest ${tab === t.id ? "bg-white text-black shadow-xl" : "text-muted/30"}`}>
+            <t.icon className="w-4 h-4" />
           </button>
         ))}
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-20">
-        <div className="space-y-12">
-          <div className="space-y-4">
-            <label className={labelClass}>{tab === "fijo" ? "Nombre del Servicio" : "Descripción"}</label>
-            <input type="text" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} placeholder="Ej: Supermercado..." required className="input-huge" />
+      <form onSubmit={handleSubmit} className="space-y-10">
+        <div className="space-y-8">
+          <div className="space-y-2">
+            <label className={labelClass}>{tab === "fijo" ? "Servicio" : "Descripción"}</label>
+            <input type="text" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} placeholder="..." required className="input-premium" />
           </div>
 
-          <div className="grid grid-cols-12 gap-6">
-            <div className="col-span-8 space-y-4">
+          <div className="grid grid-cols-12 gap-3">
+            <div className="col-span-8 space-y-2">
               <label className={labelClass}>Monto</label>
-              <input type="number" value={monto} onChange={(e) => setMonto(e.target.value)} placeholder="0.00" required className="input-huge" />
+              <input type="number" value={monto} onChange={(e) => setMonto(e.target.value)} placeholder="0" required className="input-premium" />
             </div>
-            <div className="col-span-4 space-y-4">
+            <div className="col-span-4 space-y-2">
               <label className={labelClass}>Divisa</label>
-              <select value={moneda} onChange={(e) => setMoneda(e.target.value as Moneda)} className="input-huge text-center text-sm px-0">
+              <select value={moneda} onChange={(e) => setMoneda(e.target.value as Moneda)} className="input-premium text-center text-xs px-1">
                 <option value="ARS">ARS</option>
                 <option value="USD">USD</option>
               </select>
             </div>
           </div>
 
-          <div className="space-y-8">
+          <div className="space-y-4">
             <label className={labelClass}>Categoría</label>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-2">
               {categorias.map((cat) => (
                 <button key={cat} type="button" onClick={() => setCategoria(cat)}
-                  className={`px-8 py-6 rounded-[1.8rem] text-[11px] font-bold transition-all border uppercase tracking-[0.2em] ${categoria === cat ? "bg-white border-white text-black shadow-xl scale-[1.03]" : "bg-[#0A0A0A] border-white/5 text-muted hover:text-white"}`}>
+                  className={`px-5 py-3.5 rounded-2xl text-[10px] font-bold transition-all border uppercase tracking-widest ${categoria === cat ? "bg-white border-white text-black" : "bg-[#0A0A0A] border-white/5 text-muted hover:text-white"}`}>
                   {cat}
                 </button>
               ))}
@@ -158,19 +157,19 @@ export default function NuevoPage() {
           </div>
 
           {tab === "tarjeta" && (
-            <div className="space-y-12 pt-8 animate-in fade-in slide-in-from-top-10 duration-500">
-              <div className="space-y-4">
-                <label className={labelClass}>Nombre de la Tarjeta</label>
-                <input type="text" value={tarjeta} onChange={(e) => setTarjeta(e.target.value)} placeholder="Ej: Visa Gold..." required className="input-huge" />
+            <div className="space-y-8 pt-4">
+              <div className="space-y-2">
+                <label className={labelClass}>Tarjeta</label>
+                <input type="text" value={tarjeta} onChange={(e) => setTarjeta(e.target.value)} placeholder="..." required className="input-premium" />
               </div>
-              <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
                   <label className={labelClass}>Cuotas</label>
-                  <input type="number" value={cantidadCuotas} onChange={(e) => setCantidadCuotas(e.target.value)} min="1" className="input-huge" />
+                  <input type="number" value={cantidadCuotas} onChange={(e) => setCantidadCuotas(e.target.value)} min="1" className="input-premium" />
                 </div>
-                <div className="space-y-4">
+                <div className="space-y-2">
                   <label className={labelClass}>Interés %</label>
-                  <input type="number" value={tasaInteres} onChange={(e) => setTasaInteres(e.target.value)} min="0" className="input-huge" />
+                  <input type="number" value={tasaInteres} onChange={(e) => setTasaInteres(e.target.value)} min="0" className="input-premium" />
                 </div>
               </div>
             </div>
@@ -178,8 +177,8 @@ export default function NuevoPage() {
         </div>
 
         <button type="submit" disabled={saving || !descripcion || !monto || !categoria}
-          className="btn-main py-10 mb-10 disabled:opacity-20 transition-all duration-700">
-          {saving ? <div className="w-6 h-6 border-2 border-black/20 border-t-black rounded-full animate-spin mx-auto" /> : "Confirmar Registro"}
+          className="btn-premium py-5 disabled:opacity-20 transition-all shadow-2xl active:scale-[0.96] text-[10px] mb-8">
+          {saving ? <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin mx-auto" /> : "Confirmar"}
         </button>
       </form>
     </div>
