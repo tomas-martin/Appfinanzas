@@ -6,21 +6,29 @@ import Movimiento from "@/models/Movimiento";
 import GastoFijo from "@/models/GastoFijo";
 import Compra from "@/models/Compra";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) return Response.json({ error: "No autorizado" }, { status: 401 });
 
   await dbConnect();
   const userEmail = session.user.email;
 
-  const now = new Date();
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+  // Obtener mes y año de la URL o usar el actual por defecto
+  const searchParams = request.nextUrl.searchParams;
+  const mesParam = searchParams.get("mes");
+  const anioParam = searchParams.get("anio");
 
-  // 1. Obtener movimientos
+  const now = new Date();
+  const mes = mesParam !== null ? Number(mesParam) : now.getMonth();
+  const anio = anioParam !== null ? Number(anioParam) : now.getFullYear();
+
+  const startOfMonth = new Date(anio, mes, 1);
+  const endOfMonth = new Date(anio, mes + 1, 0, 23, 59, 59);
+
+  // 1. Movimientos para el balance y totales
   const todosLosMovimientos = await Movimiento.find({ userEmail }).lean();
   
-  let balanceActual = 0; // Solo lo que pasó hasta el final de este mes
+  let balanceHistoricoFiltrado = 0; 
   let ingresosMes = 0;
   let gastosMes = 0;
 
@@ -28,16 +36,15 @@ export async function GET() {
     const monto = m.montoARS || m.monto;
     const fechaMov = new Date(m.fecha);
     
-    // FILTRO CRÍTICO: Solo sumamos al balance si el movimiento es de HOY o del PASADO
-    // Si es un pago de Agosto y estamos en Mayo, NO resta del balance actual.
+    // Balance filtrado: suma todo lo que pasó hasta el final del mes seleccionado
     if (fechaMov <= endOfMonth) {
       if (m.tipo === "ingreso") {
-        balanceActual += monto;
+        balanceHistoricoFiltrado += monto;
         if (fechaMov >= startOfMonth) {
           ingresosMes += monto;
         }
       } else {
-        balanceActual -= monto;
+        balanceHistoricoFiltrado -= monto;
         if (fechaMov >= startOfMonth) {
           gastosMes += monto;
         }
@@ -45,7 +52,10 @@ export async function GET() {
     }
   });
 
+  // 2. Gastos fijos activos
   const fijos = await GastoFijo.find({ userEmail, activo: true }).lean();
+
+  // 3. Compras pendientes
   const compras = await Compra.find({ userEmail }).lean();
   const cuotasPendientes = compras.reduce((acc: number, c: any) => {
     const restantes = c.cantidadCuotas - (c.cuotasPagadas || 0);
@@ -53,6 +63,7 @@ export async function GET() {
     return acc + (restantes * c.montoPorCuota * unitRate);
   }, 0);
 
+  // 4. Movimientos del mes seleccionado
   const ultimosMovimientos = await Movimiento.find({ 
       userEmail,
       fecha: { $gte: startOfMonth, $lte: endOfMonth } 
@@ -62,11 +73,13 @@ export async function GET() {
     .lean();
 
   return Response.json({
-    balance: balanceActual,
+    balance: balanceHistoricoFiltrado,
     ingresos: ingresosMes,
     gastos: gastosMes,
     cuotasPendientes,
     proximosVencimientos: fijos,
-    ultimosMovimientos
+    ultimosMovimientos,
+    mesActual: mes,
+    anioActual: anio
   });
 }
