@@ -22,8 +22,8 @@ export default function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-nav-forced left-0 right-0 z-50 flex justify-center px-8 pointer-events-none">
-      <div className="flex items-center justify-between w-full max-w-[400px] bg-[#111111]/80 backdrop-blur-2xl border border-white/5 rounded-[2.5rem] p-3 shadow-2xl pointer-events-auto">
+    <nav className="nav-container">
+      <div className="nav-content">
         {navItems.map((item) => {
           const isActive =
             item.href === "/"
@@ -36,10 +36,10 @@ export default function BottomNav() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="relative -top-1 transition-all active:scale-[0.85] duration-500"
+                className="relative -top-1 transition-all active:scale-[0.85]"
               >
-                <div className="w-14 h-14 rounded-full bg-white text-black flex items-center justify-center shadow-2xl">
-                  <Icon className="w-7 h-7 stroke-[3px]" />
+                <div className="w-12 h-12 rounded-full bg-white text-black flex items-center justify-center shadow-2xl">
+                  <Icon className="w-6 h-6 stroke-[3px]" />
                 </div>
               </Link>
             );
@@ -49,8 +49,8 @@ export default function BottomNav() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center justify-center w-14 h-14 rounded-2xl transition-all duration-500 ${
-                isActive ? "text-white bg-white/5" : "text-muted/40 hover:text-white/60"
+              className={`flex flex-col items-center justify-center w-12 h-12 rounded-xl transition-all ${
+                isActive ? "text-white bg-white/10" : "text-muted/50"
               }`}
             >
               <Icon className={`w-5 h-5 ${isActive ? "stroke-[2.5px]" : "stroke-[2px]"}`} />
