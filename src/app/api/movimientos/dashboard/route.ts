@@ -8,9 +8,7 @@ import Compra from "@/models/Compra";
 
 export async function GET() {
   const session = await auth();
-  if (!session?.user?.id) {
-    return Response.json({ error: "No autorizado" }, { status: 401 });
-  }
+  if (!session?.user?.id) return Response.json({ error: "No autorizado" }, { status: 401 });
 
   await dbConnect();
   const userEmail = session.user.email;
@@ -19,10 +17,10 @@ export async function GET() {
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
   const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
 
-  // 1. Todos los movimientos históricos
+  // 1. Obtener movimientos
   const todosLosMovimientos = await Movimiento.find({ userEmail }).lean();
   
-  let balanceHistorico = 0; // El dinero total real que tenés hoy
+  let balanceActual = 0; // Solo lo que pasó hasta el final de este mes
   let ingresosMes = 0;
   let gastosMes = 0;
 
@@ -30,26 +28,24 @@ export async function GET() {
     const monto = m.montoARS || m.monto;
     const fechaMov = new Date(m.fecha);
     
-    // Balance Histórico (Todo lo que pasó hasta HOY, incluyendo pagos futuros ya hechos)
-    // Pero si el usuario dice "no me bajes la plata", quizás quiere ver el balance del mes.
-    // Vamos a calcular el balance histórico pero también los del mes.
-    if (m.tipo === "ingreso") {
-      balanceHistorico += monto;
-      if (fechaMov >= startOfMonth && fechaMov <= endOfMonth) {
-        ingresosMes += monto;
-      }
-    } else {
-      balanceHistorico -= monto;
-      if (fechaMov >= startOfMonth && fechaMov <= endOfMonth) {
-        gastosMes += monto;
+    // FILTRO CRÍTICO: Solo sumamos al balance si el movimiento es de HOY o del PASADO
+    // Si es un pago de Agosto y estamos en Mayo, NO resta del balance actual.
+    if (fechaMov <= endOfMonth) {
+      if (m.tipo === "ingreso") {
+        balanceActual += monto;
+        if (fechaMov >= startOfMonth) {
+          ingresosMes += monto;
+        }
+      } else {
+        balanceActual -= monto;
+        if (fechaMov >= startOfMonth) {
+          gastosMes += monto;
+        }
       }
     }
   });
 
-  // 2. Obtener gastos fijos activos
   const fijos = await GastoFijo.find({ userEmail, activo: true }).lean();
-
-  // 3. Obtener compras en cuotas pendientes
   const compras = await Compra.find({ userEmail }).lean();
   const cuotasPendientes = compras.reduce((acc: number, c: any) => {
     const restantes = c.cantidadCuotas - (c.cuotasPagadas || 0);
@@ -57,8 +53,6 @@ export async function GET() {
     return acc + (restantes * c.montoPorCuota * unitRate);
   }, 0);
 
-  // 4. Últimos movimientos FILTRADOS por el mes actual
-  // Esto quita el "Pago Gas (8/2026)" del inicio si estamos en Mayo
   const ultimosMovimientos = await Movimiento.find({ 
       userEmail,
       fecha: { $gte: startOfMonth, $lte: endOfMonth } 
@@ -68,7 +62,7 @@ export async function GET() {
     .lean();
 
   return Response.json({
-    balance: balanceHistorico, // Mantenemos el global, pero los de abajo son mensuales
+    balance: balanceActual,
     ingresos: ingresosMes,
     gastos: gastosMes,
     cuotasPendientes,
