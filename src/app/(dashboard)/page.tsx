@@ -13,7 +13,7 @@ import {
   ChevronLeft,
   Calendar
 } from "lucide-react";
-import { formatMoney, getCategoryIcon, getMonthName } from "@/lib/utils";
+import { formatMoney, getCategoryIcon, getMonthName, formatDateShort } from "@/lib/utils";
 import Link from "next/link";
 
 interface DashboardData {
