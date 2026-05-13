@@ -24,8 +24,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#0A0F1E",
   viewportFit: "cover",
+  themeColor: "#060912",
 };
 
 import PWARegistration from "@/components/layout/PWARegistration";

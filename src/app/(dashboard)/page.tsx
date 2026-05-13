@@ -58,9 +58,9 @@ export default function Dashboard() {
   const userImage = session?.user?.image;
 
   return (
-    <div className="container-mobile pt-20 pb-48 fade-in">
+    <div className="container-mobile pt-safe pb-nav fade-in">
       {/* Header - More Elegant & Smaller */}
-      <div className="flex items-center justify-between mb-16 px-2">
+      <div className="flex items-center justify-between mt-12 mb-16 px-2">
         <div className="flex items-center gap-5">
           {userImage ? (
             <div className="relative">

@@ -76,8 +76,8 @@ export default function GastosFijosPage() {
   }
 
   return (
-    <div className="container-mobile pt-16 pb-48 fade-in">
-      <div className="flex items-center justify-between mb-16 px-1">
+    <div className="container-mobile pt-safe pb-nav fade-in">
+      <div className="flex items-center justify-between mt-12 mb-16 px-1">
         <div className="flex items-center gap-6">
           <button onClick={() => router.back()} className="p-3.5 rounded-[1.2rem] bg-white/[0.02] border border-white/5 text-muted/30 hover:text-primary transition-all shadow-xl">
             <ChevronLeft className="w-5 h-5" />

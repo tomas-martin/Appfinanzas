@@ -22,7 +22,7 @@ export default function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 w-[85%] max-w-[420px]">
+    <nav className="fixed bottom-nav left-1/2 -translate-x-1/2 z-50 w-[85%] max-w-[420px]">
       <div className="glass-card flex items-center justify-between px-8 py-3.5 bg-white/[0.01] backdrop-blur-3xl border-white/[0.04] shadow-[0_30px_70px_-15px_rgba(0,0,0,0.8)]">
         {navItems.map((item) => {
           const isActive =

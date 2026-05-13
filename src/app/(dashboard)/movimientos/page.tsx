@@ -3,15 +3,15 @@
 import { useEffect, useState } from "react";
 import { Trash2, Pencil, Filter, X, Search, ChevronLeft } from "lucide-react";
 import { formatMoney, formatDateShort, getCategoryIcon } from "@/lib/utils";
+import { type Moneda } from "@/types";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Moneda } from "@/types";
 
 interface Mov {
   _id: string;
   tipo: string;
   monto: number;
-  moneda: string;
+  moneda: Moneda;
   montoARS?: number;
   descripcion: string;
   categoria: string;
@@ -33,11 +33,7 @@ export default function MovimientosPage() {
 
   async function fetchMovimientos() {
     try {
-      const now = new Date();
-      const res = await fetch(
-        `/api/movimientos?mes=${now.getMonth()}&anio=${now.getFullYear()}`,
-        { cache: "no-store" }
-      );
+      const res = await fetch("/api/movimientos", { cache: "no-store" });
       const data = await res.json();
       setMovimientos(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -80,8 +76,8 @@ export default function MovimientosPage() {
   }
 
   return (
-    <div className="container-mobile pt-16 pb-48 fade-in">
-      <div className="flex items-center justify-between mb-16 px-1">
+    <div className="container-mobile pt-safe pb-nav fade-in">
+      <div className="flex items-center justify-between mt-12 mb-16 px-1">
         <div className="flex items-center gap-6">
           <button onClick={() => router.back()} className="p-3.5 rounded-[1.2rem] bg-white/[0.02] border border-white/5 text-muted/30 hover:text-primary transition-all">
             <ChevronLeft className="w-5 h-5" />
@@ -99,13 +95,12 @@ export default function MovimientosPage() {
         </Link>
       </div>
 
-      {/* Search & Filters */}
       <div className="space-y-10 mb-20">
         <div className="relative group">
           <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-muted/20 group-focus-within:text-primary transition-colors" />
-          <input
-            type="text"
-            placeholder="Buscar por nombre..."
+          <input 
+            type="text" 
+            placeholder="Buscar por nombre..." 
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
             className="w-full bg-white/[0.01] border border-white/5 rounded-[1.2rem] pl-14 pr-6 py-4 text-sm text-foreground placeholder:text-muted/10 focus:border-primary/20 transition-all outline-none shadow-inner"
@@ -117,10 +112,11 @@ export default function MovimientosPage() {
             <button
               key={f}
               onClick={() => setFiltro(f)}
-              className={`px-6 py-3.5 rounded-[1.2rem] text-[8px] font-black transition-all shrink-0 uppercase tracking-[0.4em] border ${filtro === f
-                ? "bg-white border-white text-black shadow-xl scale-105"
-                : "bg-white/[0.01] border-white/5 text-muted/20 hover:text-muted/40"
-                }`}
+              className={`px-6 py-3.5 rounded-[1.2rem] text-[8px] font-black transition-all shrink-0 uppercase tracking-[0.4em] border ${
+                filtro === f
+                  ? "bg-white border-white text-black shadow-xl scale-105"
+                  : "bg-white/[0.01] border-white/5 text-muted/20 hover:text-muted/40"
+              }`}
             >
               {f === "todos" ? "Todos" : f === "ingreso" ? "Ingresos" : "Gastos"}
             </button>
@@ -128,7 +124,6 @@ export default function MovimientosPage() {
         </div>
       </div>
 
-      {/* Movement list */}
       {filtered.length === 0 ? (
         <div className="p-24 text-center border border-dashed border-white/[0.03] rounded-[2.5rem]">
           <p className="text-muted/10 text-[9px] font-black uppercase tracking-[0.6em]">Sin resultados</p>
@@ -144,9 +139,7 @@ export default function MovimientosPage() {
                     <input
                       type="text"
                       value={editData.descripcion ?? mov.descripcion}
-                      onChange={(e) =>
-                        setEditData({ ...editData, descripcion: e.target.value })
-                      }
+                      onChange={(e) => setEditData({ ...editData, descripcion: e.target.value })}
                       className="w-full bg-white/[0.02] rounded-xl px-5 py-4 text-sm text-foreground border border-white/5 outline-none"
                     />
                   </div>
@@ -155,12 +148,7 @@ export default function MovimientosPage() {
                     <input
                       type="number"
                       value={editData.monto ?? mov.monto}
-                      onChange={(e) =>
-                        setEditData({
-                          ...editData,
-                          monto: Number(e.target.value),
-                        })
-                      }
+                      onChange={(e) => setEditData({ ...editData, monto: Number(e.target.value) })}
                       className="w-full bg-white/[0.02] rounded-xl px-5 py-4 text-sm text-foreground border border-white/5 outline-none"
                     />
                   </div>
@@ -185,7 +173,7 @@ export default function MovimientosPage() {
                   <div className="text-right">
                     <p className={`text-[15px] font-black tracking-tighter ${mov.tipo === "ingreso" ? "text-success" : "text-white"}`}>
                       {mov.tipo === "ingreso" ? "+" : ""}
-                      {formatMoney(mov.monto, mov.moneda as Moneda)}
+                      {formatMoney(mov.monto, mov.moneda)}
                     </p>
                     {mov.moneda === "USD" && mov.montoARS && (
                       <p className="text-[8px] font-black text-muted/10 mt-1 uppercase tracking-widest">
