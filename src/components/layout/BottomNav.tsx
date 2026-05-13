@@ -5,15 +5,15 @@ import Link from "next/link";
 import {
   LayoutDashboard,
   ArrowLeftRight,
-  PlusCircle,
+  Plus,
   CreditCard,
   BarChart3,
 } from "lucide-react";
 
 const navItems = [
   { href: "/", icon: LayoutDashboard, label: "Inicio" },
-  { href: "/movimientos", icon: ArrowLeftRight, label: "Movimientos" },
-  { href: "/nuevo", icon: PlusCircle, label: "Nuevo", isCenter: true },
+  { href: "/movimientos", icon: ArrowLeftRight, label: "Historial" },
+  { href: "/nuevo", icon: Plus, label: "Nuevo", isCenter: true },
   { href: "/tarjetas", icon: CreditCard, label: "Tarjetas" },
   { href: "/estadisticas", icon: BarChart3, label: "Stats" },
 ];
@@ -22,8 +22,8 @@ export default function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-sm">
-      <div className="glass-card flex items-center justify-between px-6 py-4 bg-surface/30 backdrop-blur-3xl border-white/5 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+    <nav className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 w-[85%] max-w-[420px]">
+      <div className="glass-card flex items-center justify-between px-8 py-3.5 bg-white/[0.01] backdrop-blur-3xl border-white/[0.04] shadow-[0_30px_70px_-15px_rgba(0,0,0,0.8)]">
         {navItems.map((item) => {
           const isActive =
             item.href === "/"
@@ -37,10 +37,10 @@ export default function BottomNav() {
                 key={item.href}
                 href={item.href}
                 id={`nav-${item.label.toLowerCase()}`}
-                className="relative -top-10 transition-all active:scale-90"
+                className="relative -top-10 transition-all active:scale-[0.85] duration-500"
               >
-                <div className="w-16 h-16 rounded-2xl btn-primary flex items-center justify-center shadow-2xl shadow-primary/40 border-[5px] border-background">
-                  <Icon className="w-8 h-8 text-white" />
+                <div className="w-14 h-14 rounded-2xl bg-white text-black flex items-center justify-center shadow-2xl border-[4px] border-[#060912]">
+                  <Icon className="w-7 h-7 stroke-[3px]" />
                 </div>
               </Link>
             );
@@ -51,15 +51,14 @@ export default function BottomNav() {
               key={item.href}
               href={item.href}
               id={`nav-${item.label.toLowerCase()}`}
-              className={`flex flex-col items-center transition-all duration-300 ${
-                isActive ? "text-primary" : "text-muted/30 hover:text-muted/60"
+              className={`flex flex-col items-center gap-1 transition-all duration-500 ${
+                isActive ? "text-white" : "text-muted/10 hover:text-muted/30"
               }`}
             >
-              <div className={`relative p-2 rounded-2xl transition-all duration-300 ${isActive ? "bg-primary/10 scale-110" : ""}`}>
-                {isActive && <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full animate-pulse" />}
-                <Icon className={`relative w-6 h-6 ${isActive ? "stroke-[2.5px]" : "stroke-[1.8px]"}`} />
+              <div className={`relative p-2.5 rounded-xl transition-all duration-500 ${isActive ? "bg-white/[0.03] scale-110 shadow-inner" : ""}`}>
+                <Icon className={`relative w-5 h-5 ${isActive ? "stroke-[2.5px]" : "stroke-[1.8px]"}`} />
               </div>
-              <span className={`text-[8px] font-black tracking-widest uppercase transition-all mt-1 ${isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1"}`}>
+              <span className={`text-[7px] font-black tracking-[0.2em] uppercase transition-all ${isActive ? "opacity-40" : "opacity-0"}`}>
                 {item.label}
               </span>
             </Link>

@@ -5,54 +5,53 @@ import { Wallet } from "lucide-react";
 
 export default function LoginPage() {
   return (
-    <div className="min-h-dvh flex flex-col items-center justify-center px-10 relative overflow-hidden bg-[#060912]">
-      {/* Premium Background Elements */}
-      <div className="absolute top-[-20%] left-[-20%] w-[140%] h-[140%] bg-primary/[0.03] rounded-full blur-[120px] animate-pulse" />
+    <div className="min-h-dvh flex flex-col items-center justify-center px-12 relative overflow-hidden bg-[#060912]">
+      {/* Background Glows - Even softer */}
+      <div className="absolute top-[-30%] left-[-30%] w-[160%] h-[160%] bg-primary/[0.02] rounded-full blur-[140px] animate-pulse" />
       
-      <div className="relative z-10 flex flex-col items-center text-center max-w-sm w-full py-20">
-        {/* Animated Logo */}
-        <div className="w-28 h-28 rounded-[2.5rem] bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center mb-16 shadow-2xl shadow-primary/20 rotate-6 hover:rotate-0 transition-all duration-700 group cursor-pointer border border-white/10">
-          <Wallet className="w-14 h-14 text-white group-hover:scale-110 transition-transform duration-500" />
+      <div className="relative z-10 flex flex-col items-center text-center max-w-sm w-full py-24">
+        {/* Logo - More elegant spacing */}
+        <div className="w-24 h-24 rounded-[2.2rem] bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center mb-20 shadow-2xl shadow-primary/10 rotate-6 hover:rotate-0 transition-all duration-700 group cursor-pointer border border-white/5">
+          <Wallet className="w-11 h-11 text-white group-hover:scale-110 transition-transform duration-500" />
         </div>
 
-        {/* Title & Tagline */}
-        <div className="mb-16">
-          <h1 className="text-5xl font-black mb-6 tracking-tighter">
-            <span className="text-white">Mis</span>
-            <span className="text-primary-light">Finanzas</span>
+        {/* Title - Smaller & More Spaced */}
+        <div className="mb-20">
+          <h1 className="text-4xl font-black mb-6 tracking-tighter text-white/90">
+            Mis<span className="text-primary-light">Finanzas</span>
           </h1>
-          <p className="text-muted/50 text-base font-medium leading-relaxed max-w-[300px] mx-auto">
-            La forma más inteligente y elegante de controlar tu dinero.
+          <p className="text-muted/40 text-sm font-medium leading-relaxed max-w-[260px] mx-auto uppercase tracking-wider">
+            Control inteligente <br /> y elegante de tu dinero
           </p>
         </div>
 
-        {/* Premium Features Card */}
-        <div className="glass-card p-10 w-full mb-20 space-y-10 border-white/[0.05] bg-white/[0.01] backdrop-blur-3xl shadow-2xl">
+        {/* Features - More vertical space between items */}
+        <div className="glass-card p-12 w-full mb-24 space-y-12 border-white/[0.03] bg-white/[0.01] backdrop-blur-3xl shadow-2xl">
           {[
-            { icon: "⚡", title: "Rápido", text: "Registros en segundos" },
-            { icon: "🛡️", title: "Seguro", text: "Tus datos están encriptados" },
-            { icon: "📊", title: "Visual", text: "Gráficos que dicen la verdad" },
+            { icon: "⚡", title: "Rápido", text: "Registros al instante" },
+            { icon: "🛡️", title: "Seguro", text: "Datos encriptados" },
+            { icon: "📊", title: "Visual", text: "Análisis inteligente" },
           ].map((item, i) => (
             <div key={i} className="flex items-center gap-6 text-left group">
-              <div className="w-12 h-12 rounded-2xl bg-white/[0.03] flex items-center justify-center text-2xl group-hover:bg-primary/10 transition-all duration-300 border border-white/5 shadow-inner">
+              <div className="w-11 h-11 rounded-xl bg-white/[0.02] flex items-center justify-center text-xl group-hover:bg-primary/10 transition-all duration-300 border border-white/5">
                 {item.icon}
               </div>
               <div>
-                <p className="text-[11px] font-black text-primary-light uppercase tracking-[0.2em] mb-1">{item.title}</p>
-                <p className="text-sm font-bold text-muted/60">{item.text}</p>
+                <p className="text-[10px] font-black text-primary-light uppercase tracking-[0.3em] mb-1">{item.title}</p>
+                <p className="text-xs font-bold text-muted/50">{item.text}</p>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Google Sign In Button */}
-        <div className="w-full space-y-10">
+        {/* Action - More margin top */}
+        <div className="w-full space-y-12">
           <button
             onClick={() => signIn("google", { callbackUrl: "/" })}
             id="google-sign-in-btn"
-            className="w-full flex items-center justify-center gap-4 bg-white text-black font-black py-6 px-8 rounded-[2rem] hover:bg-gray-100 active:scale-[0.95] transition-all duration-500 shadow-[0_20px_40px_-10px_rgba(255,255,255,0.15)] text-sm uppercase tracking-[0.2em]"
+            className="w-full flex items-center justify-center gap-5 bg-white text-black font-black py-6 px-8 rounded-[2.2rem] hover:bg-gray-100 active:scale-[0.95] transition-all duration-500 shadow-[0_30px_60px_-12px_rgba(255,255,255,0.1)] text-[11px] uppercase tracking-[0.3em]"
           >
-            <svg className="w-6 h-6" viewBox="0 0 24 24">
+            <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
                 fill="#4285F4"
@@ -70,11 +69,11 @@ export default function LoginPage() {
                 fill="#EA4335"
               />
             </svg>
-            Empezar ahora
+            Acceder con Google
           </button>
 
-          <p className="text-muted/20 text-[10px] font-black uppercase tracking-[0.5em]">
-            V. 1.0 · 2026
+          <p className="text-muted/10 text-[9px] font-black uppercase tracking-[0.6em]">
+            Premium v.1.0
           </p>
         </div>
       </div>
