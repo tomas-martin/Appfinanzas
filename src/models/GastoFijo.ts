@@ -12,6 +12,11 @@ const GastoFijoSchema = new Schema(
     categoria: { type: String, required: true },
     activo: { type: Boolean, default: true },
     ultimoPago: { type: Date },
+    pagos: [{
+      mes: { type: Number, required: true },
+      anio: { type: Number, required: true },
+      fechaPago: { type: Date, default: Date.now }
+    }]
   },
   { timestamps: true }
 );

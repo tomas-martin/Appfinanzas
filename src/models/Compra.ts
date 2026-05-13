@@ -16,6 +16,11 @@ const CompraSchema = new Schema(
     fechaInicio: { type: Date, required: true },
     diaVencimiento: { type: Number, default: 10 },
     categoria: { type: String, required: true },
+    pagos: [{
+      mes: { type: Number, required: true },
+      anio: { type: Number, required: true },
+      fechaPago: { type: Date, default: Date.now }
+    }]
   },
   { timestamps: true }
 );

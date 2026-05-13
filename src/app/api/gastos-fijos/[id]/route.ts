@@ -16,26 +16,54 @@ export async function PUT(
   const { id } = await params;
   const body = await request.json();
 
+  // Custom logic for monthly payments
+  if (body.pagoMes !== undefined && body.pagoAnio !== undefined) {
+    const existing = await GastoFijo.findOne({
+      _id: id,
+      userEmail: session.user.email,
+      "pagos.mes": body.pagoMes,
+      "pagos.anio": body.pagoAnio
+    });
+
+    if (existing) {
+      // Toggle off: Remove payment and related movement if possible? 
+      // For now, let's just support adding/removing.
+      const gf = await GastoFijo.findOneAndUpdate(
+        { _id: id, userEmail: session.user.email },
+        { $pull: { pagos: { mes: body.pagoMes, anio: body.pagoAnio } } },
+        { new: true }
+      );
+      return Response.json(gf);
+    } else {
+      // Add payment
+      const gf = await GastoFijo.findOneAndUpdate(
+        { _id: id, userEmail: session.user.email },
+        { $push: { pagos: { mes: body.pagoMes, anio: body.pagoAnio } } },
+        { new: true }
+      );
+
+      // Create Movement
+      const Movimiento = (await import("@/models/Movimiento")).default;
+      await Movimiento.create({
+        userEmail: session.user.email,
+        tipo: "gasto",
+        monto: gf.monto,
+        moneda: gf.moneda,
+        tipoCambio: gf.tipoCambio,
+        montoARS: (gf.monto || 0) * (gf.tipoCambio || 1),
+        descripcion: `Pago: ${gf.nombre} (${body.pagoMes + 1}/${body.pagoAnio})`,
+        categoria: gf.categoria,
+        fecha: new Date(),
+      });
+      return Response.json(gf);
+    }
+  }
+
   const gastoFijo = await GastoFijo.findOneAndUpdate(
     { _id: id, userEmail: session.user.email },
     body,
     { new: true }
   );
-
-  if (gastoFijo && body.ultimoPago) {
-    const Movimiento = (await import("@/models/Movimiento")).default;
-    await Movimiento.create({
-      userEmail: session.user.email,
-      tipo: "gasto",
-      monto: gastoFijo.monto,
-      moneda: gastoFijo.moneda,
-      tipoCambio: gastoFijo.tipoCambio,
-      montoARS: (gastoFijo.monto || 0) * (gastoFijo.tipoCambio || 1),
-      descripcion: `Pago: ${gastoFijo.nombre}`,
-      categoria: gastoFijo.categoria,
-      fecha: new Date(),
-    });
-  }
 
   if (!gastoFijo) {
     return Response.json({ error: "No encontrado" }, { status: 404 });

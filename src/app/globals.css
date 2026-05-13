@@ -4,10 +4,13 @@
 @theme inline {
   --color-background: #000000;
   --color-surface: #0A0A0A;
-  --color-border: rgba(255, 255, 255, 0.05);
+  --color-border: rgba(255, 255, 255, 0.08);
   --color-foreground: #FFFFFF;
-  --color-muted: #666666;
-  --color-primary: #FFFFFF;
+  --color-muted: #888888;
+  --color-primary: #6366f1; /* Indigo */
+  --color-success: #10b981; /* Emerald */
+  --color-danger: #ef4444;  /* Ruby */
+  --color-warning: #f59e0b; /* Amber */
   --font-sans: "Plus Jakarta Sans", sans-serif;
 }
 
@@ -15,6 +18,7 @@
 :root {
   --safe-top: env(safe-area-inset-top, 20px);
   --safe-bottom: env(safe-area-inset-bottom, 20px);
+  --accent-glow: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.15), transparent 70%);
 }
 
 body {
@@ -23,9 +27,10 @@ body {
   font-family: var(--font-sans);
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
-  /* El contenido respira según el dispositivo */
   padding-top: calc(1rem + var(--safe-top));
-  padding-bottom: calc(6rem + var(--safe-bottom));
+  padding-bottom: calc(7rem + var(--safe-bottom));
+  background-image: var(--accent-glow);
+  background-attachment: fixed;
 }
 
 .container-mobile {
@@ -35,24 +40,49 @@ body {
   padding: 0 1.5rem;
 }
 
-/* Premium Card - Responsive Padding */
+/* Vibrancy Cards */
 .premium-card {
-  background: #0D0D0D;
+  background: rgba(13, 13, 13, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border: 1px solid var(--color-border);
   border-radius: 2rem;
-  padding: clamp(1rem, 5vw, 1.5rem);
-  transition: transform 0.2s ease;
+  padding: clamp(1.2rem, 5vw, 1.8rem);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.premium-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
 }
 
 .premium-card:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
+  background: rgba(20, 20, 20, 0.9);
 }
 
-/* Typography - Fluid Sizes */
-.text-balance {
-  font-size: clamp(2.5rem, 10vw, 3.5rem);
+/* Buttons with Vibrancy */
+.btn-primary {
+  background: var(--color-primary);
+  color: white;
   font-weight: 800;
-  letter-spacing: -0.05em;
+  font-size: 0.9rem;
+  padding: 1.2rem;
+  border-radius: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  width: 100%;
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-primary:active {
+  transform: translateY(2px);
+  box-shadow: 0 5px 15px rgba(99, 102, 241, 0.2);
 }
 
 .input-premium {
@@ -65,26 +95,14 @@ body {
   width: 100%;
   color: white;
   outline: none;
+  transition: border-color 0.3s ease;
 }
 
-.btn-premium {
-  background: white;
-  color: black;
-  font-weight: 800;
-  font-size: 0.9rem;
-  padding: 1.2rem;
-  border-radius: 1.2rem;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  width: 100%;
-  transition: opacity 0.2s ease;
+.input-premium:focus {
+  border-color: var(--color-primary);
 }
 
-.btn-premium:active {
-  opacity: 0.8;
-}
-
-/* Universal Bottom Nav Position */
+/* Navigation System */
 .nav-container {
   position: fixed;
   left: 50%;
@@ -96,25 +114,40 @@ body {
 }
 
 .nav-content {
-  background: rgba(17, 17, 17, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--color-border);
-  border-radius: 2rem;
-  padding: 0.75rem;
+  background: rgba(17, 17, 17, 0.8);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 2.2rem;
+  padding: 0.8rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+}
+
+/* Month Selector Utility */
+.month-dot {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 9px;
+  font-weight: 800;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  border: 1px solid rgba(255,255,255,0.05);
 }
 
 /* Animations */
 .fade-up {
-  animation: fadeUp 0.5s ease-out forwards;
+  animation: fadeUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(15px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
