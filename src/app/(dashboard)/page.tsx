@@ -9,7 +9,6 @@ import {
   CalendarClock,
   X,
   Trash2,
-  Plus,
   LogOut
 } from "lucide-react";
 import { formatMoney, getCategoryIcon } from "@/lib/utils";
@@ -150,8 +149,9 @@ export default function Dashboard() {
                   </div>
                   <div className="text-right">
                     <p className={`font-bold text-sm tracking-tight ${mov.tipo === "ingreso" ? "text-success" : "text-white"}`}>
-                      {mov.tipo === "ingreso" ? "+" : ""}{formatMoney(mov.monto, mov.moneda)}
+                      {mov.tipo === "ingreso" ? "+" : ""}{formatMoney(mov.monto)}
                     </p>
+                    <p className="text-[8px] font-bold text-muted/30 uppercase mt-0.5">{mov.moneda}</p>
                   </div>
                 </div>
               )}
@@ -159,7 +159,6 @@ export default function Dashboard() {
           ))}
         </div>
       </div>
-
     </div>
   );
 }

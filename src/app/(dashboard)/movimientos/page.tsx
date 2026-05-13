@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Trash2, Pencil, X, Search, ChevronLeft, Plus } from "lucide-react";
+import { Trash2, X, Search, ChevronLeft, Plus } from "lucide-react";
 import { formatMoney, formatDateShort, getCategoryIcon } from "@/lib/utils";
 import { type Moneda } from "@/types";
 import { useRouter } from "next/navigation";
@@ -127,8 +127,9 @@ export default function MovimientosPage() {
                   </div>
                   <div className="text-right">
                     <p className={`font-bold text-sm tracking-tight ${mov.tipo === "ingreso" ? "text-success" : "text-white"}`}>
-                      {mov.tipo === "ingreso" ? "+" : ""}{formatMoney(mov.monto, mov.moneda)}
+                      {mov.tipo === "ingreso" ? "+" : ""}{formatMoney(mov.monto)}
                     </p>
+                    <p className="text-[8px] font-bold text-muted/30 uppercase mt-0.5">{mov.moneda}</p>
                   </div>
                 </div>
               )}

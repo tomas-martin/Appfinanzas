@@ -16,11 +16,27 @@ export async function PUT(
   const { id } = await params;
   const body = await request.json();
 
+  const prevCompra = await Compra.findById(id);
   const compra = await Compra.findOneAndUpdate(
     { _id: id, userEmail: session.user.email },
     body,
     { new: true }
   );
+
+  if (compra && body.cuotasPagadas > (prevCompra?.cuotasPagadas || 0)) {
+    const Movimiento = (await import("@/models/Movimiento")).default;
+    await Movimiento.create({
+      userEmail: session.user.email,
+      tipo: "gasto",
+      monto: compra.montoPorCuota,
+      moneda: compra.moneda,
+      tipoCambio: compra.tipoCambio,
+      montoARS: (compra.montoPorCuota || 0) * (compra.tipoCambio || 1),
+      descripcion: `Pago Cuota: ${compra.descripcion}`,
+      categoria: "Tarjetas",
+      fecha: new Date(),
+    });
+  }
 
   if (!compra) {
     return Response.json({ error: "No encontrado" }, { status: 404 });
