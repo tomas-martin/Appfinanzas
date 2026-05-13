@@ -65,10 +65,10 @@ export default function TarjetasPage() {
   const currentMonth = new Date().getMonth();
   const currentYear = new Date().getFullYear();
 
-  const activas = compras.filter((c) => c.cuotasPagadas < c.cantidadCuotas);
+  const activas = compras.filter((c) => (c.cuotasPagadas || 0) < c.cantidadCuotas);
   const totalPendiente = activas.reduce((s, c) => {
     const unitPrice = c.montoPorCuota * (c.moneda === "USD" ? (c.tipoCambio || 1420) : 1);
-    return s + (c.cantidadCuotas - c.cuotasPagadas) * unitPrice;
+    return s + (c.cantidadCuotas - (c.cuotasPagadas || 0)) * unitPrice;
   }, 0);
 
   if (loading) {
@@ -101,8 +101,12 @@ export default function TarjetasPage() {
       <div className="space-y-4">
         {activas.map((c) => {
           const unitPriceARS = c.montoPorCuota * (c.moneda === "USD" ? (c.tipoCambio || 1420) : 1);
-          const restante = (c.cantidadCuotas - c.cuotasPagadas) * unitPriceARS;
+          const restante = (c.cantidadCuotas - (c.cuotasPagadas || 0)) * unitPriceARS;
           
+          const startDate = new Date(c.fechaInicio);
+          const startMonth = startDate.getMonth();
+          const startYear = startDate.getFullYear();
+
           return (
             <div key={c._id} className="premium-card p-6 space-y-6 group">
               <div className="flex justify-between items-start">
@@ -117,11 +121,11 @@ export default function TarjetasPage() {
 
               <div className="space-y-3">
                 <div className="flex justify-between text-[9px] font-bold uppercase tracking-widest">
-                  <span className="text-indigo-400">Cuota {c.cuotasPagadas}/{c.cantidadCuotas}</span>
+                  <span className="text-indigo-400">Cuota {c.cuotasPagadas || 0}/{c.cantidadCuotas}</span>
                   <span className="text-muted">{formatMoney(c.montoPorCuota, c.moneda as any)}</span>
                 </div>
                 <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
-                  <div className="h-full bg-primary transition-all duration-1000" style={{ width: `${(c.cuotasPagadas / c.cantidadCuotas) * 100}%` }} />
+                  <div className="h-full bg-primary transition-all duration-1000" style={{ width: `${((c.cuotasPagadas || 0) / c.cantidadCuotas) * 100}%` }} />
                 </div>
               </div>
 
@@ -132,7 +136,7 @@ export default function TarjetasPage() {
                     <p className="text-lg font-bold">{formatMoney(restante)}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-[8px] font-bold text-muted/40 uppercase tracking-widest">Inicio: {new Date(c.fechaInicio).toLocaleDateString('es-AR', { month: 'short', year: 'numeric' })}</p>
+                    <p className="text-[8px] font-bold text-muted/40 uppercase tracking-widest">Inicia: {startDate.toLocaleDateString('es-AR', { month: 'short', year: 'numeric' })}</p>
                   </div>
                 </div>
 
@@ -141,11 +145,17 @@ export default function TarjetasPage() {
                     const isPaid = c.pagos?.some((p) => p.mes === i && p.anio === currentYear);
                     const isCurrent = i === currentMonth;
                     
+                    // Bloqueo de meses antes del inicio de la deuda
+                    const isBeforeStart = (currentYear < startYear) || (currentYear === startYear && i < startMonth);
+                    const isAfterLimit = (currentYear > startYear + Math.ceil(c.cantidadCuotas / 12)) || (c.cuotasPagadas >= c.cantidadCuotas && !isPaid);
+
                     return (
-                      <button key={i} onClick={() => handleTogglePago(c._id, i, currentYear)}
+                      <button key={i} onClick={() => !isBeforeStart && handleTogglePago(c._id, i, currentYear)}
+                        disabled={isBeforeStart}
                         className={`month-dot ${
                           isPaid ? "bg-success text-black border-success shadow-[0_0_15px_rgba(16,185,129,0.3)]" : 
                           isCurrent ? "bg-white/10 text-white border-white/20" : 
+                          isBeforeStart ? "opacity-10 cursor-not-allowed" :
                           "bg-[#111111] text-muted/30"
                         }`}>
                         {m}

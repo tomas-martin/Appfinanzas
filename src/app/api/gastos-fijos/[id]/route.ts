@@ -16,7 +16,6 @@ export async function PUT(
   const { id } = await params;
   const body = await request.json();
 
-  // Custom logic for monthly payments
   if (body.pagoMes !== undefined && body.pagoAnio !== undefined) {
     const existing = await GastoFijo.findOne({
       _id: id,
@@ -26,23 +25,27 @@ export async function PUT(
     });
 
     if (existing) {
-      // Toggle off: Remove payment and related movement if possible? 
-      // For now, let's just support adding/removing.
       const gf = await GastoFijo.findOneAndUpdate(
         { _id: id, userEmail: session.user.email },
         { $pull: { pagos: { mes: body.pagoMes, anio: body.pagoAnio } } },
         { new: true }
       );
+      // Remove corresponding movement (simplified: based on description)
+      const Movimiento = (await import("@/models/Movimiento")).default;
+      await Movimiento.deleteOne({
+        userEmail: session.user.email,
+        descripcion: `Pago: ${gf.nombre} (${body.pagoMes + 1}/${body.pagoAnio})`
+      });
       return Response.json(gf);
     } else {
-      // Add payment
       const gf = await GastoFijo.findOneAndUpdate(
         { _id: id, userEmail: session.user.email },
         { $push: { pagos: { mes: body.pagoMes, anio: body.pagoAnio } } },
         { new: true }
       );
 
-      // Create Movement
+      // Create Movement with specific month date
+      const fechaPago = new Date(body.pagoAnio, body.pagoMes, gf.diaVencimiento || 1);
       const Movimiento = (await import("@/models/Movimiento")).default;
       await Movimiento.create({
         userEmail: session.user.email,
@@ -53,7 +56,7 @@ export async function PUT(
         montoARS: (gf.monto || 0) * (gf.tipoCambio || 1),
         descripcion: `Pago: ${gf.nombre} (${body.pagoMes + 1}/${body.pagoAnio})`,
         categoria: gf.categoria,
-        fecha: new Date(),
+        fecha: fechaPago,
       });
       return Response.json(gf);
     }
@@ -65,10 +68,6 @@ export async function PUT(
     { new: true }
   );
 
-  if (!gastoFijo) {
-    return Response.json({ error: "No encontrado" }, { status: 404 });
-  }
-
   return Response.json(gastoFijo);
 }
 
@@ -77,21 +76,9 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await auth();
-  if (!session?.user?.id) {
-    return Response.json({ error: "No autorizado" }, { status: 401 });
-  }
-
+  if (!session?.user?.id) return Response.json({ error: "No autorizado" }, { status: 401 });
   await dbConnect();
   const { id } = await params;
-
-  const gastoFijo = await GastoFijo.findOneAndDelete({
-    _id: id,
-    userEmail: session.user.email,
-  });
-
-  if (!gastoFijo) {
-    return Response.json({ error: "No encontrado" }, { status: 404 });
-  }
-
+  const gastoFijo = await GastoFijo.findOneAndDelete({ _id: id, userEmail: session.user.email });
   return Response.json({ message: "Eliminado" });
 }
