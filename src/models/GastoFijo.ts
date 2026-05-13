@@ -11,6 +11,7 @@ const GastoFijoSchema = new Schema(
     diaVencimiento: { type: Number, required: true, min: 1, max: 31 },
     categoria: { type: String, required: true },
     activo: { type: Boolean, default: true },
+    ultimoPago: { type: Date },
   },
   { timestamps: true }
 );

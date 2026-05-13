@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ChevronLeft, Wallet, CreditCard, CalendarClock, TrendingUp } from "lucide-react";
 import { CATEGORIAS_GASTO, CATEGORIAS_INGRESO, type Moneda } from "@/types";
 import { getDolarBlue } from "@/lib/currency";
+import { formatMoney } from "@/lib/utils";
 
 type TabType = "gasto" | "ingreso" | "fijo" | "tarjeta";
 
@@ -25,10 +26,8 @@ export default function NuevoPage() {
   const [tipoCambio, setTipoCambio] = useState(1420);
 
   useEffect(() => {
-    if (moneda === "USD") {
-      getDolarBlue().then((rate) => setTipoCambio(rate));
-    }
-  }, [moneda]);
+    getDolarBlue().then((rate) => setTipoCambio(rate));
+  }, []);
 
   const categorias = tab === "ingreso" ? CATEGORIAS_INGRESO : CATEGORIAS_GASTO;
   const labelClass = "text-[10px] font-bold text-muted uppercase tracking-[0.3em] mb-3 ml-4 block";
@@ -134,7 +133,7 @@ export default function NuevoPage() {
 
           <div className="grid grid-cols-12 gap-3">
             <div className="col-span-8 space-y-2">
-              <label className={labelClass}>Monto</label>
+              <label className={labelClass}>Monto {moneda === "USD" && <span className="text-white/20 normal-case ml-2">≈ {formatMoney(montoARS)}</span>}</label>
               <input type="number" value={monto} onChange={(e) => setMonto(e.target.value)} placeholder="0" required className="input-premium" />
             </div>
             <div className="col-span-4 space-y-2">
@@ -172,6 +171,13 @@ export default function NuevoPage() {
                   <input type="number" value={tasaInteres} onChange={(e) => setTasaInteres(e.target.value)} min="0" className="input-premium" />
                 </div>
               </div>
+            </div>
+          )}
+
+          {tab === "fijo" && (
+            <div className="space-y-2 animate-in fade-in slide-in-from-top-4 duration-500">
+              <label className={labelClass}>Día de Vencimiento</label>
+              <input type="number" value={diaVencimiento} onChange={(e) => setDiaVencimiento(e.target.value)} min="1" max="31" className="input-premium" />
             </div>
           )}
 

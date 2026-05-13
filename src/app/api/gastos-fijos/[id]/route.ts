@@ -22,6 +22,21 @@ export async function PUT(
     { new: true }
   );
 
+  if (gastoFijo && body.ultimoPago) {
+    const Movimiento = (await import("@/models/Movimiento")).default;
+    await Movimiento.create({
+      userEmail: session.user.email,
+      tipo: "gasto",
+      monto: gastoFijo.monto,
+      moneda: gastoFijo.moneda,
+      tipoCambio: gastoFijo.tipoCambio,
+      montoARS: (gastoFijo.monto || 0) * (gastoFijo.tipoCambio || 1),
+      descripcion: `Pago: ${gastoFijo.nombre}`,
+      categoria: gastoFijo.categoria,
+      fecha: new Date(),
+    });
+  }
+
   if (!gastoFijo) {
     return Response.json({ error: "No encontrado" }, { status: 404 });
   }
