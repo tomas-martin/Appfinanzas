@@ -30,7 +30,7 @@ export default function NuevoPage() {
   }, []);
 
   const categorias = tab === "ingreso" ? CATEGORIAS_INGRESO : CATEGORIAS_GASTO;
-  const labelClass = "text-[12px] font-bold text-muted uppercase tracking-[0.3em] mb-4 ml-4 block";
+  const labelClass = "text-[11px] font-bold text-muted uppercase tracking-[0.3em] mb-3.5 ml-4 block";
 
   const montoNum = Number(monto) || 0;
   const montoARS = moneda === "USD" ? montoNum * tipoCambio : montoNum;
@@ -73,17 +73,17 @@ export default function NuevoPage() {
 
   return (
     <div className="container-mobile pb-24 fade-up">
-      <div className="flex items-center gap-5 mt-6 mb-10">
-        <button onClick={() => router.back()} className="p-4 rounded-full bg-[#111111] border border-white/5 text-white">
-          <ChevronLeft className="w-6 h-6" />
+      <div className="flex items-center gap-4.5 mt-6 mb-8 px-1">
+        <button onClick={() => router.back()} className="p-3.5 rounded-full bg-[#111111] border border-white/5 text-white active:scale-90 transition-all">
+          <ChevronLeft className="w-5.5 h-5.5" />
         </button>
-        <h1 className="text-4xl font-extrabold tracking-tighter">Registrar</h1>
+        <h1 className="text-3xl font-extrabold tracking-tighter">Registrar</h1>
       </div>
 
-      <div className="flex gap-2 overflow-x-auto no-scrollbar mb-10 pb-2">
+      <div className="flex gap-2 overflow-x-auto no-scrollbar mb-8 pb-1 px-1">
         {(["gasto", "ingreso", "fijo", "tarjeta"] as const).map((t) => (
           <button key={t} onClick={() => setTab(t)}
-            className={`px-8 py-3.5 rounded-full text-[11px] font-black uppercase tracking-widest whitespace-nowrap border transition-all ${
+            className={`px-7 py-3 rounded-full text-[10px] font-black uppercase tracking-widest whitespace-nowrap border transition-all ${
               tab === t ? "bg-white border-white text-black shadow-lg" : "bg-white/5 border-white/5 text-muted"
             }`}>
             {t === "gasto" ? "Gasto" : t === "ingreso" ? "Ingreso" : t === "fijo" ? "Servicio" : "Tarjeta"}
@@ -91,20 +91,20 @@ export default function NuevoPage() {
         ))}
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-10">
+      <form onSubmit={handleSubmit} className="space-y-8 px-1">
         <div>
           <label className={labelClass}>Descripción</label>
-          <input required type="text" placeholder="Ej: Supermercado" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} className="input-premium py-5 text-lg" />
+          <input required type="text" placeholder="Ej: Supermercado" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} className="input-premium py-4 text-base" />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className={labelClass}>Monto</label>
-            <input required type="number" step="any" placeholder="0.00" value={monto} onChange={(e) => setMonto(e.target.value)} className="input-premium py-5 text-xl font-black" />
+            <input required type="number" step="any" placeholder="0.00" value={monto} onChange={(e) => setMonto(e.target.value)} className="input-premium py-4 text-lg font-black" />
           </div>
           <div>
             <label className={labelClass}>Moneda</label>
-            <select value={moneda} onChange={(e) => setMoneda(e.target.value as Moneda)} className="input-premium py-5 text-lg">
+            <select value={moneda} onChange={(e) => setMoneda(e.target.value as Moneda)} className="input-premium py-4 text-base">
               <option value="ARS">ARS (Pesos)</option>
               <option value="USD">USD (Dólar)</option>
             </select>
@@ -112,23 +112,23 @@ export default function NuevoPage() {
         </div>
 
         {moneda === "USD" && (
-          <div className="mx-4 p-5 rounded-3xl bg-indigo-500/10 border border-indigo-500/20">
-            <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-1">Simulación a Pesos (Hoy)</p>
-            <p className="text-2xl font-black text-white">{formatMoney(montoARS)}</p>
-            <p className="text-[8px] font-medium text-white/40 mt-1 uppercase tracking-widest">Tipo de cambio: $1.420</p>
+          <div className="mx-2 p-4 rounded-3xl bg-indigo-500/10 border border-indigo-500/20">
+            <p className="text-[9px] font-bold text-indigo-400 uppercase tracking-widest mb-1">Simulación a Pesos</p>
+            <p className="text-xl font-black text-white">{formatMoney(montoARS)}</p>
+            <p className="text-[8px] font-medium text-white/40 mt-1 uppercase tracking-widest">Cambio: $1.420</p>
           </div>
         )}
 
         <div>
           <label className={labelClass}>Categoría</label>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-2.5">
             {categorias.map((cat) => (
               <button key={cat} type="button" onClick={() => setCategoria(cat)}
-                className={`flex flex-col items-center gap-3 p-5 rounded-3xl border transition-all ${
+                className={`flex flex-col items-center gap-2.5 p-4 rounded-[2rem] border transition-all ${
                   categoria === cat ? "bg-white border-white text-black shadow-lg" : "bg-white/5 border-white/5 text-white"
                 }`}>
-                <span className="text-2xl">{getCategoryIcon(cat)}</span>
-                <span className="text-[9px] font-bold uppercase tracking-tighter text-center leading-tight">{cat}</span>
+                <span className="text-xl">{getCategoryIcon(cat)}</span>
+                <span className="text-[8.5px] font-bold uppercase tracking-tighter text-center leading-tight">{cat}</span>
               </button>
             ))}
           </div>
@@ -137,31 +137,31 @@ export default function NuevoPage() {
         {tab === "fijo" && (
           <div>
             <label className={labelClass}>Día de Vencimiento</label>
-            <input type="number" min="1" max="31" value={diaVencimiento} onChange={(e) => setDiaVencimiento(e.target.value)} className="input-premium py-5 text-lg" />
+            <input type="number" min="1" max="31" value={diaVencimiento} onChange={(e) => setDiaVencimiento(e.target.value)} className="input-premium py-4 text-base" />
           </div>
         )}
 
         {tab === "tarjeta" && (
-          <div className="space-y-8">
+          <div className="space-y-6">
             <div>
               <label className={labelClass}>Nombre de Tarjeta</label>
-              <input type="text" placeholder="Ej: Visa Santander" value={tarjeta} onChange={(e) => setTarjeta(e.target.value)} className="input-premium py-5 text-lg" />
+              <input type="text" placeholder="Ej: Visa Santander" value={tarjeta} onChange={(e) => setTarjeta(e.target.value)} className="input-premium py-4 text-base" />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className={labelClass}>Cuotas Totales</label>
-                <input type="number" min="1" value={cantidadCuotas} onChange={(e) => setCantidadCuotas(e.target.value)} className="input-premium py-5 text-lg" />
+                <input type="number" min="1" value={cantidadCuotas} onChange={(e) => setCantidadCuotas(e.target.value)} className="input-premium py-4 text-base" />
               </div>
               <div>
                 <label className={labelClass}>Día de Pago</label>
-                <input type="number" min="1" max="31" value={diaVencimiento} onChange={(e) => setDiaVencimiento(e.target.value)} className="input-premium py-5 text-lg" />
+                <input type="number" min="1" max="31" value={diaVencimiento} onChange={(e) => setDiaVencimiento(e.target.value)} className="input-premium py-4 text-base" />
               </div>
             </div>
           </div>
         )}
 
         <div className="pt-4 pb-12">
-          <button type="submit" disabled={saving} className="btn-primary w-full py-6 text-[14px] font-black uppercase tracking-[0.3em] flex items-center justify-center gap-3">
+          <button type="submit" disabled={saving} className="btn-primary w-full py-5 text-[12px] font-black uppercase tracking-[0.3em] flex items-center justify-center gap-3">
             {saving ? <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" /> : "Confirmar Registro"}
           </button>
         </div>
