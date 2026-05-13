@@ -22,8 +22,8 @@ export default function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-surface/80 backdrop-blur-2xl border-t border-white/5 shadow-[0_-4px_20px_rgba(0,0,0,0.3)]">
-      <div className="flex items-center justify-around max-w-lg mx-auto px-4 pt-3 pb-[calc(env(safe-area-inset-bottom,0px)+12px)]">
+    <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md">
+      <div className="glass-card flex items-center justify-around px-2 py-3 bg-surface/40 backdrop-blur-3xl border-white/10 shadow-2xl">
         {navItems.map((item) => {
           const isActive =
             item.href === "/"
@@ -37,10 +37,10 @@ export default function BottomNav() {
                 key={item.href}
                 href={item.href}
                 id={`nav-${item.label.toLowerCase()}`}
-                className="flex items-center justify-center -mt-10 mb-2"
+                className="relative -top-8 transition-transform active:scale-90"
               >
-                <div className="w-16 h-16 rounded-full btn-primary flex items-center justify-center shadow-lg shadow-primary/40 active:scale-90 transition-all border-4 border-background">
-                  <Icon className="w-8 h-8 text-white" />
+                <div className="w-16 h-16 rounded-3xl btn-primary flex items-center justify-center shadow-2xl shadow-primary/40 border-[6px] border-background rotate-45">
+                  <Icon className="w-8 h-8 text-white -rotate-45" />
                 </div>
               </Link>
             );
@@ -51,14 +51,14 @@ export default function BottomNav() {
               key={item.href}
               href={item.href}
               id={`nav-${item.label.toLowerCase()}`}
-              className={`flex flex-col items-center gap-1.5 py-1 px-3 transition-all ${
-                isActive ? "text-primary scale-110" : "text-muted opacity-70 hover:opacity-100"
+              className={`flex flex-col items-center gap-1 py-1 px-4 transition-all duration-300 ${
+                isActive ? "text-primary" : "text-muted/50 hover:text-muted"
               }`}
             >
-              <div className={`p-1.5 rounded-xl transition-colors ${isActive ? "bg-primary/10" : ""}`}>
+              <div className={`p-2 rounded-2xl transition-all duration-300 ${isActive ? "bg-primary/10 scale-110 shadow-inner" : ""}`}>
                 <Icon className={`w-6 h-6 ${isActive ? "stroke-[2.5px]" : "stroke-[1.5px]"}`} />
               </div>
-              <span className={`text-[10px] font-bold tracking-wide uppercase ${isActive ? "opacity-100" : "opacity-0"}`}>
+              <span className={`text-[9px] font-extrabold tracking-tighter uppercase transition-all duration-300 ${isActive ? "opacity-100 scale-100" : "opacity-0 scale-50"}`}>
                 {item.label}
               </span>
             </Link>
