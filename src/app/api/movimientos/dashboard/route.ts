@@ -5,6 +5,7 @@ import dbConnect from "@/lib/mongodb";
 import Movimiento from "@/models/Movimiento";
 import GastoFijo from "@/models/GastoFijo";
 import Compra from "@/models/Compra";
+import MetaAhorro from "@/models/MetaAhorro";
 
 export async function GET(request: NextRequest) {
   const session = await auth();
@@ -63,6 +64,9 @@ export async function GET(request: NextRequest) {
     return acc + (restantes * c.montoPorCuota * unitRate);
   }, 0);
 
+  // 4. Metas de ahorro
+  const metasCount = await MetaAhorro.countDocuments({ userEmail });
+
   // 4. Movimientos del mes seleccionado
   const ultimosMovimientos = await Movimiento.find({ 
       userEmail,
@@ -79,6 +83,7 @@ export async function GET(request: NextRequest) {
     cuotasPendientes,
     proximosVencimientos: fijos,
     ultimosMovimientos,
+    metasCount,
     mesActual: mes,
     anioActual: anio
   });

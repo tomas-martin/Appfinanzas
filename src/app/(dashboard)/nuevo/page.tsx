@@ -47,7 +47,10 @@ export default function NuevoPage() {
         descripcion,
         categoria,
         fecha,
-        ...(tab === "fijo" && { diaVencimiento: Number(diaVencimiento) }),
+        ...(tab === "fijo" && { 
+          nombre: descripcion,
+          diaVencimiento: Number(diaVencimiento) 
+        }),
         ...(tab === "tarjeta" && { 
           cantidadCuotas: Number(cantidadCuotas), 
           tasaInteres: Number(tasaInteres),

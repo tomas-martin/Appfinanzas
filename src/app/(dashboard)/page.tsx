@@ -11,7 +11,8 @@ import {
   Trash2,
   LogOut,
   ChevronLeft,
-  Calendar
+  Calendar,
+  Target
 } from "lucide-react";
 import { formatMoney, getCategoryIcon, getMonthName, formatDateShort } from "@/lib/utils";
 import Link from "next/link";
@@ -23,6 +24,7 @@ interface DashboardData {
   cuotasPendientes: number;
   proximosVencimientos: any[];
   ultimosMovimientos: any[];
+  metasCount?: number;
 }
 
 export default function Dashboard() {
@@ -149,6 +151,13 @@ export default function Dashboard() {
           </div>
           <p className="text-[9px] font-bold text-muted uppercase tracking-widest mb-1.5">Fijos</p>
           <p className="text-lg font-black text-white">{data?.proximosVencimientos.length || 0} pagos</p>
+        </Link>
+        <Link href="/metas" className="premium-card p-5 flex flex-col items-center text-center group hover:border-primary/30 col-span-2">
+          <div className="w-11 h-11 rounded-2xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+            <Target className="w-5 h-5" />
+          </div>
+          <p className="text-[9px] font-bold text-muted uppercase tracking-widest mb-1.5">Metas de Ahorro</p>
+          <p className="text-lg font-black text-white">{data?.metasCount || 0} activas</p>
         </Link>
       </div>
 

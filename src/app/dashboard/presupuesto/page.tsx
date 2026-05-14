@@ -24,7 +24,7 @@ export default function PresupuestoPage() {
   const [movimientos, setMovimientos] = useState<Mov[]>([]);
   const [mesOffset, setMesOffset] = useState(0);
   const [showForm, setShowForm] = useState(false);
-  const [newCat, setNewCat] = useState(CATEGORIAS_GASTO[0]);
+  const [newCat, setNewCat] = useState<typeof CATEGORIAS_GASTO[number]>(CATEGORIAS_GASTO[0]);
   const [newMonto, setNewMonto] = useState("");
   const [saving, setSaving] = useState(false);
 
