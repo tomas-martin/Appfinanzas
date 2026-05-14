@@ -1,24 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #0A0F1E;
-  --color-surface: #111827;
-  --color-surface-light: #1F2937;
-  --color-border: #374151;
-  --color-foreground: #F9FAFB;
-  --color-muted: #9CA3AF;
-  --color-primary: #6C63FF;
-  --color-primary-dark: #5A52D5;
-  --color-primary-light: #8B83FF;
-  --color-success: #00C896;
-  --color-success-dark: #00A67B;
-  --color-danger: #FF4D6D;
-  --color-danger-dark: #E63956;
-  --color-warning: #FFB443;
-  --color-info: #38BDF8;
-  --color-card-glass: rgba(17, 24, 39, 0.7);
-  --color-card-border: rgba(99, 102, 241, 0.15);
-  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --color-background: #000000;
+  --color-surface: #0A0A0A;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-foreground: #FFFFFF;
+  --color-muted: #888888;
+  --color-primary: #6366f1; /* Indigo */
+  --color-success: #10b981; /* Emerald */
+  --color-danger: #ef4444;  /* Ruby */
+  --color-warning: #f59e0b; /* Amber */
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+}
+
+/* Responsive Root */
+:root {
+  --safe-top: env(safe-area-inset-top, 20px);
+  --safe-bottom: env(safe-area-inset-bottom, 20px);
+  --accent-glow: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.15), transparent 70%);
 }
 
 * {
@@ -28,7 +28,7 @@
 }
 
 html {
-  font-size: 17px; /* subido de 16px, se lee mejor en XR */
+  font-size: 17px;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -38,93 +38,132 @@ body {
   font-family: var(--font-sans);
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding-bottom: calc(7rem + var(--safe-bottom));
+  background-image: var(--accent-glow);
+  background-attachment: fixed;
 }
 
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 999px; }
-
-/* Glassmorphism card */
-.glass-card {
-  background: var(--color-card-glass);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--color-card-border);
-  border-radius: 1.25rem;
+.container-mobile {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
 }
 
-.gradient-text {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-info));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* Vibrancy Cards */
+.premium-card {
+  background: rgba(13, 13, 13, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--color-border);
+  border-radius: 2rem;
+  padding: clamp(1.2rem, 5vw, 1.8rem);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
 }
 
-.gradient-bg {
-  background: linear-gradient(135deg, #0A0F1E 0%, #1a1145 50%, #0A0F1E 100%);
-  background-size: 200% 200%;
-  animation: gradientShift 8s ease infinite;
+.premium-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
 }
 
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+.premium-card:active {
+  transform: scale(0.97);
+  background: rgba(20, 20, 20, 0.9);
 }
 
-.glow-pulse {
-  animation: glowPulse 2s ease-in-out infinite alternate;
+/* Buttons with Vibrancy */
+.btn-primary {
+  background: var(--color-primary);
+  color: white;
+  font-weight: 800;
+  font-size: 0.9rem;
+  padding: 1.2rem;
+  border-radius: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  width: 100%;
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+  transition: all 0.3s ease;
 }
 
-@keyframes glowPulse {
-  from { box-shadow: 0 0 20px rgba(108, 99, 255, 0.2); }
-  to { box-shadow: 0 0 30px rgba(108, 99, 255, 0.4); }
+.btn-primary:active {
+  transform: translateY(2px);
+  box-shadow: 0 5px 15px rgba(99, 102, 241, 0.2);
 }
 
-.fade-in {
-  animation: fadeIn 0.3s ease-out;
+.input-premium {
+  background: #0D0D0D;
+  border: 1px solid var(--color-border);
+  border-radius: 1.2rem;
+  padding: 1rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  width: 100%;
+  color: white;
+  outline: none;
+  transition: border-color 0.3s ease;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+.input-premium:focus {
+  border-color: var(--color-primary);
+}
+
+/* Navigation System */
+.nav-container {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(1.5rem + var(--safe-bottom));
+  width: calc(100% - 3rem);
+  max-width: 400px;
+  z-index: 100;
+}
+
+.nav-content {
+  background: rgba(17, 17, 17, 0.8);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 2.2rem;
+  padding: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+}
+
+/* Month Selector Utility */
+.month-dot {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 9px;
+  font-weight: 800;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Animations */
+.fade-up {
+  animation: fadeUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(15px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.slide-up {
-  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(100%); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/*
-  SAFE AREA FIX — requiere viewportFit: "cover" en layout.tsx.
-  6rem = altura del nav (h-16 = 4rem) + margen cómodo de 2rem.
-  env(safe-area-inset-bottom) = ~34px en iPhone XR/X/11/12/13/14/15.
-*/
 .pb-safe {
   padding-bottom: calc(6rem + env(safe-area-inset-bottom, 20px));
 }
 
-/* Evita el zoom automático de iOS al enfocar inputs */
-input, select, textarea {
-  outline: none;
-  font-size: 16px;
-}
-
-input:focus, select:focus, textarea:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.15);
-}
-
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-input[type="number"] {
-  -moz-appearance: textfield;
-}
+::-webkit-scrollbar { width: 0px; }
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
