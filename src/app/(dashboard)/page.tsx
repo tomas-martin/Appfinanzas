@@ -2,28 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useSession, signOut } from "next-auth/react";
-import {
-  ArrowUpRight,
-  ArrowDownRight,
-  CreditCard,
-  CalendarClock,
-  X,
-  Trash2,
-  LogOut,
-  ChevronLeft,
-  Target,
-} from "lucide-react";
+import { ArrowUpRight, ArrowDownRight, CreditCard, CalendarClock, X, Trash2, LogOut, ChevronLeft, ChevronRight, Target } from "lucide-react";
 import { formatMoney, getCategoryIcon, getMonthName, formatDateShort } from "@/lib/utils";
 import Link from "next/link";
 
 interface DashboardData {
-  balance: number;
-  ingresos: number;
-  gastos: number;
-  cuotasPendientes: number;
-  proximosVencimientos: any[];
-  ultimosMovimientos: any[];
-  metasCount?: number;
+  balance: number; ingresos: number; gastos: number;
+  cuotasPendientes: number; proximosVencimientos: any[];
+  ultimosMovimientos: any[]; metasCount?: number;
 }
 
 export default function Dashboard() {
@@ -35,242 +21,204 @@ export default function Dashboard() {
   const [mes, setMes] = useState(new Date().getMonth());
   const [anio, setAnio] = useState(new Date().getFullYear());
 
-  useEffect(() => { fetchDashboardData(); }, [mes, anio]);
+  useEffect(() => { fetchData(); }, [mes, anio]);
 
-  async function fetchDashboardData() {
+  async function fetchData() {
     setLoading(true);
     try {
       const res = await fetch(`/api/movimientos/dashboard?mes=${mes}&anio=${anio}`, { cache: "no-store" });
       setData(await res.json());
-    } catch (err) { console.error(err); }
+    } catch (e) { console.error(e); }
     finally { setLoading(false); }
   }
 
   async function handleDelete(id: string) {
-    if (!confirm("¿Eliminar este movimiento?")) return;
+    if (!confirm("¿Eliminar?")) return;
     await fetch(`/api/movimientos/${id}`, { method: "DELETE" });
-    setEditId(null);
-    fetchDashboardData();
+    setEditId(null); fetchData();
   }
 
   async function handleEdit(id: string) {
-    await fetch(`/api/movimientos/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(editData),
-    });
-    setEditId(null);
-    fetchDashboardData();
+    await fetch(`/api/movimientos/${id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(editData) });
+    setEditId(null); fetchData();
   }
 
-  const changeMonth = (delta: number) => {
-    let newMes = mes + delta;
-    let newAnio = anio;
-    if (newMes < 0) { newMes = 11; newAnio--; }
-    if (newMes > 11) { newMes = 0; newAnio++; }
-    setMes(newMes);
-    setAnio(newAnio);
+  const changeMonth = (d: number) => {
+    let m = mes + d, y = anio;
+    if (m < 0) { m = 11; y--; } if (m > 11) { m = 0; y++; }
+    setMes(m); setAnio(y);
   };
-
-  if (loading && !data) {
-    return (
-      <div className="flex items-center justify-center min-h-dvh">
-        <div className="w-6 h-6 border-2 border-white/10 border-t-white/60 rounded-full animate-spin" />
-      </div>
-    );
-  }
 
   const firstName = session?.user?.name?.split(" ")[0] || "Usuario";
 
-  return (
-    <div className="container-mobile fade-up pt-6 pb-32">
+  if (loading && !data) return (
+    <div className="flex items-center justify-center min-h-dvh">
+      <div className="w-5 h-5 border-2 border-white/10 border-t-white/50 rounded-full animate-spin" />
+    </div>
+  );
 
-      {/* ── Header ───────────────────────────────────────── */}
-      <div className="flex items-center justify-between mb-8">
+  return (
+    <div className="page fade-up">
+
+      {/* ─ Header ──────────────────────── */}
+      <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           {session?.user?.image && (
-            <div className="relative">
-              <img
-                src={session.user.image}
-                alt={firstName}
-                className="w-9 h-9 rounded-full border border-white/10"
-              />
-              <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-[--color-success] rounded-full border-2 border-[--color-background]" />
+            <div className="relative shrink-0">
+              <img src={session.user.image} alt="" className="w-8 h-8 rounded-full" />
+              <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[--color-green] border-2 border-[--color-bg]" />
             </div>
           )}
-          <div>
-            <p className="text-xs text-[--color-muted] font-medium">Hola,</p>
-            <p className="text-sm font-bold leading-tight">{firstName}</p>
-          </div>
+          <p className="text-sm font-medium text-[--color-muted]">
+            Hola, <span className="text-[--color-text] font-semibold">{firstName}</span>
+          </p>
         </div>
-        <button
-          onClick={() => signOut({ callbackUrl: "/login" })}
-          className="w-9 h-9 rounded-full bg-[--color-surface] border border-[--color-border] flex items-center justify-center text-[--color-muted] active:scale-90 transition-all"
-        >
-          <LogOut className="w-3.5 h-3.5" />
+        <button onClick={() => signOut({ callbackUrl: "/login" })} className="btn-icon btn-icon-round">
+          <LogOut size={15} />
         </button>
       </div>
 
-      {/* ── Month selector ────────────────────────────────── */}
-      <div className="flex items-center justify-between mb-6 px-1">
-        <button
-          onClick={() => changeMonth(-1)}
-          className="w-8 h-8 rounded-full bg-[--color-surface] border border-[--color-border] flex items-center justify-center active:scale-90 transition-all"
-        >
-          <ChevronLeft className="w-4 h-4 text-[--color-muted]" />
+      {/* ─ Month selector ─────────────── */}
+      <div className="flex items-center justify-between mb-5 px-1">
+        <button onClick={() => changeMonth(-1)} className="btn-icon">
+          <ChevronLeft size={16} />
         </button>
         <p className="text-xs font-bold uppercase tracking-widest text-[--color-muted]">
           {getMonthName(mes)} {anio}
         </p>
-        <button
-          onClick={() => changeMonth(1)}
-          className="w-8 h-8 rounded-full bg-[--color-surface] border border-[--color-border] flex items-center justify-center active:scale-90 transition-all"
-        >
-          <ChevronLeft className="w-4 h-4 text-[--color-muted] rotate-180" />
+        <button onClick={() => changeMonth(1)} className="btn-icon">
+          <ChevronRight size={16} />
         </button>
       </div>
 
-      {/* ── Balance Hero ──────────────────────────────────── */}
-      <div className="text-center mb-8 px-4">
-        <p className="text-xs font-semibold text-[--color-muted] mb-2 uppercase tracking-wider">Balance total</p>
-        <h1
-          className={`text-5xl font-bold tracking-tight mb-4 transition-all duration-300 ${loading ? "opacity-30 blur-sm" : "opacity-100"
-            }`}
+      {/* ─ Balance hero ───────────────── */}
+      <div className="text-center mb-6 py-2">
+        <p className="section-label mb-3">Balance acumulado</p>
+        <p
+          className="font-bold tracking-tight leading-none mb-4 transition-all duration-300"
+          style={{
+            fontSize: "clamp(2rem,9vw,2.8rem)",
+            letterSpacing: "-0.04em",
+            opacity: loading ? 0.3 : 1,
+          }}
         >
           {formatMoney(data?.balance || 0)}
-        </h1>
+        </p>
         <div className="flex items-center justify-center gap-2">
-          <span className="stat-pill bg-[--color-success-dim] text-[--color-success]">
-            <ArrowUpRight className="w-3 h-3" />
+          <span className="stat-pill" style={{ background: "var(--color-green-dim)", color: "var(--color-green)" }}>
+            <ArrowUpRight size={13} />
             {formatMoney(data?.ingresos || 0)}
           </span>
-          <span className="stat-pill bg-[--color-danger-dim] text-[--color-danger]">
-            <ArrowDownRight className="w-3 h-3" />
+          <span className="stat-pill" style={{ background: "var(--color-red-dim)", color: "var(--color-red)" }}>
+            <ArrowDownRight size={13} />
             {formatMoney(data?.gastos || 0)}
           </span>
         </div>
       </div>
 
-      {/* ── Quick stats ───────────────────────────────────── */}
+      {/* ─ Quick cards ────────────────── */}
       <div className="grid grid-cols-2 gap-3 mb-3">
-        <Link href="/tarjetas" className="card flex flex-col gap-3 group">
-          <div className="w-8 h-8 rounded-xl bg-[--color-primary-dim] flex items-center justify-center">
-            <CreditCard className="w-4 h-4 text-[--color-primary]" />
+        <Link href="/tarjetas" className="card flex flex-col gap-3">
+          <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "var(--color-accent-dim)" }}>
+            <CreditCard size={16} style={{ color: "var(--color-accent)" }} />
           </div>
           <div>
             <p className="section-label mb-1">Tarjetas</p>
-            <p className="text-lg font-bold">{formatMoney(data?.cuotasPendientes || 0)}</p>
+            <p className="text-base font-bold">{formatMoney(data?.cuotasPendientes || 0)}</p>
           </div>
         </Link>
-
-        <Link href="/gastos-fijos" className="card flex flex-col gap-3 group">
-          <div className="w-8 h-8 rounded-xl bg-[--color-primary-dim] flex items-center justify-center">
-            <CalendarClock className="w-4 h-4 text-[--color-primary]" />
+        <Link href="/gastos-fijos" className="card flex flex-col gap-3">
+          <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "var(--color-accent-dim)" }}>
+            <CalendarClock size={16} style={{ color: "var(--color-accent)" }} />
           </div>
           <div>
             <p className="section-label mb-1">Fijos</p>
-            <p className="text-lg font-bold">{data?.proximosVencimientos.length || 0} pagos</p>
+            <p className="text-base font-bold">{data?.proximosVencimientos.length || 0} pagos</p>
           </div>
         </Link>
       </div>
 
-      <Link href="/metas" className="card flex items-center gap-4 mb-8 group">
-        <div className="w-8 h-8 rounded-xl bg-[--color-primary-dim] flex items-center justify-center">
-          <Target className="w-4 h-4 text-[--color-primary]" />
+      <Link href="/metas" className="card card-static flex items-center gap-3 mb-7">
+        <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: "var(--color-accent-dim)" }}>
+          <Target size={16} style={{ color: "var(--color-accent)" }} />
         </div>
-        <div>
+        <div className="flex-1 min-w-0">
           <p className="section-label mb-0.5">Metas de ahorro</p>
-          <p className="text-base font-bold">{data?.metasCount || 0} activas</p>
+          <p className="text-sm font-semibold">{data?.metasCount || 0} activas</p>
         </div>
-        <ChevronLeft className="w-4 h-4 text-[--color-muted] rotate-180 ml-auto" />
+        <ChevronRight size={15} style={{ color: "var(--color-muted)" }} className="shrink-0" />
       </Link>
 
-      {/* ── Recent movements ─────────────────────────────── */}
+      {/* ─ Movements ──────────────────── */}
       <div>
-        <div className="flex items-center justify-between mb-4 px-1">
-          <p className="section-label">Movimientos de {getMonthName(mes)}</p>
-          <Link href="/movimientos" className="text-xs font-semibold text-[--color-primary]">Ver todo</Link>
+        <div className="flex items-center justify-between mb-3 px-1">
+          <p className="section-label">{getMonthName(mes)}</p>
+          <Link href="/movimientos" className="text-xs font-semibold" style={{ color: "var(--color-accent)" }}>
+            Ver todo
+          </Link>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2 pb-4">
           {loading ? (
-            <div className="flex justify-center py-10">
-              <div className="w-5 h-5 border-2 border-white/10 border-t-white/40 rounded-full animate-spin" />
+            <div className="flex justify-center py-8">
+              <div className="w-4 h-4 border-2 border-white/10 border-t-white/30 rounded-full animate-spin" />
             </div>
           ) : !data?.ultimosMovimientos.length ? (
-            <div className="card text-center py-10">
-              <p className="section-label">Sin actividad este mes</p>
+            <div className="card card-static text-center py-8">
+              <p className="section-label">Sin actividad</p>
             </div>
-          ) : (
-            data.ultimosMovimientos.map((mov: any) => (
-              <div
-                key={mov._id}
-                onClick={() => editId !== mov._id && setEditId(mov._id)}
-                className={`card transition-all cursor-pointer ${editId === mov._id ? "bg-[--color-surface-2] ring-1 ring-[--color-primary]/20" : ""
-                  }`}
-              >
-                {editId === mov._id ? (
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <span className="section-label text-[--color-primary]">Editar</span>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); setEditId(null); }}
-                        className="p-1"
-                      >
-                        <X className="w-4 h-4 text-[--color-muted]" />
-                      </button>
-                    </div>
-                    <input
-                      autoFocus
-                      type="text"
-                      value={editData.descripcion ?? mov.descripcion}
-                      onChange={(e) => setEditData({ ...editData, descripcion: e.target.value })}
-                      className="input-premium"
-                    />
-                    <input
-                      type="number"
-                      value={editData.monto ?? mov.monto}
-                      onChange={(e) => setEditData({ ...editData, monto: Number(e.target.value) })}
-                      className="input-premium"
-                    />
-                    <div className="flex gap-2 pt-1">
-                      <button
-                        onClick={(e) => { e.stopPropagation(); handleEdit(mov._id); }}
-                        className="btn-primary py-3 text-sm"
-                      >
-                        Guardar
-                      </button>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); handleDelete(mov._id); }}
-                        className="px-4 py-3 bg-[--color-danger-dim] text-[--color-danger] rounded-xl"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
+          ) : data.ultimosMovimientos.map((mov: any) => (
+            <div
+              key={mov._id}
+              onClick={() => editId !== mov._id && setEditId(mov._id)}
+              className={`card cursor-pointer ${editId === mov._id ? "card-static" : ""}`}
+              style={editId === mov._id ? { background: "var(--color-surface-2)", outline: "1px solid rgba(108,99,255,0.2)" } : {}}
+            >
+              {editId === mov._id ? (
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <p className="section-label" style={{ color: "var(--color-accent)" }}>Editar</p>
+                    <button onClick={e => { e.stopPropagation(); setEditId(null); }} className="btn-icon w-7 h-7">
+                      <X size={13} />
+                    </button>
                   </div>
-                ) : (
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-2xl bg-[--color-surface-2] flex items-center justify-center text-lg shrink-0">
-                      {getCategoryIcon(mov.categoria)}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-sm truncate">{mov.descripcion}</p>
-                      <p className="text-xs text-[--color-muted] mt-0.5">
-                        {formatDateShort(mov.fecha)} · {mov.categoria}
-                      </p>
-                    </div>
-                    <div className="text-right shrink-0">
-                      <p className={`font-bold text-sm ${mov.tipo === "ingreso" ? "text-[--color-success]" : "text-[--color-foreground]"
-                        }`}>
-                        {mov.tipo === "ingreso" ? "+" : "−"}{formatMoney(mov.monto)}
-                      </p>
-                      <p className="text-[10px] text-[--color-muted] mt-0.5 font-mono">{mov.moneda}</p>
-                    </div>
+                  <input autoFocus className="input" style={{ height: "44px" }}
+                    value={editData.descripcion ?? mov.descripcion}
+                    onChange={e => setEditData({ ...editData, descripcion: e.target.value })} />
+                  <input className="input" type="number" style={{ height: "44px" }}
+                    value={editData.monto ?? mov.monto}
+                    onChange={e => setEditData({ ...editData, monto: Number(e.target.value) })} />
+                  <div className="flex gap-2 pt-1">
+                    <button onClick={e => { e.stopPropagation(); handleEdit(mov._id); }} className="btn btn-primary" style={{ height: "42px", fontSize: "0.82rem" }}>
+                      Guardar
+                    </button>
+                    <button onClick={e => { e.stopPropagation(); handleDelete(mov._id); }} className="btn btn-danger shrink-0" style={{ width: "42px", height: "42px", padding: 0 }}>
+                      <Trash2 size={15} />
+                    </button>
                   </div>
-                )}
-              </div>
-            ))
-          )}
+                </div>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-xl shrink-0"
+                    style={{ background: "var(--color-surface-2)" }}>
+                    {getCategoryIcon(mov.categoria)}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold truncate">{mov.descripcion}</p>
+                    <p className="text-xs mt-0.5" style={{ color: "var(--color-muted)" }}>
+                      {formatDateShort(mov.fecha)} · {mov.categoria}
+                    </p>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <p className="text-sm font-bold" style={{ color: mov.tipo === "ingreso" ? "var(--color-green)" : "var(--color-text)" }}>
+                      {mov.tipo === "ingreso" ? "+" : "−"}{formatMoney(mov.monto)}
+                    </p>
+                    <p className="text-[10px] mt-0.5" style={{ color: "var(--color-muted-2)", fontFamily: "monospace" }}>{mov.moneda}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
     </div>
